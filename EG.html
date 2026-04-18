@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- SEO Meta Tags -->
+    <title>V-Cash Pro | فودافون كاش بتاعك.. بس على نضافة 😂</title>
+    <meta name="description" content="أداة روشة تلملك فوضى رسايل فودافون كاش وتعملك لوحة تحكم تعرفك فلوسك راحت فين، ومين كل عليك فلوس، مجاناً وفي السر التام.">
+    <meta name="keywords" content="فودافون كاش, تحليل مالي, تطبيق مصاريف, إدارة أموال, Vodafone Cash, V-Cash">
+    <meta name="author" content="V-Cash Pro">
+    
+    <!-- Open Graph / Social Media Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="V-Cash Pro | فودافون كاش بتاعك، بس على نضافة">
+    <meta property="og:description" content="زهقت من تدوير الرسايل؟ حوّل دوشة رسايل فودافون كاش للوحة تحكم شيك بضغطة زرار ومن غير ما تشارك بياناتك مع حد.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1200">
+    
+    <!-- Performance & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Cairo', 'sans-serif'], 
+                        numbers:['Space Grotesk', 'sans-serif'] 
+                    },
+                    colors: {
+                        voda: { red: '#E60000', light: '#ff3333', dark: '#0a0a0a', card: '#141414', border: 'rgba(255,255,255,0.08)' }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'shine': 'shine 6s infinite',
+                        'pulse-glow': 'pulse-glow 4s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shine: {
+                            '0%': { left: '-100%' },
+                            '20%': { left: '200%' },
+                            '100%': { left: '200%' }
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #000000; color: #ffffff; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* Background Gradients & Meshes */
+        .bg-mesh-1 { position: absolute; top: -10%; right: -10%; width: 60vw; height: 60vw; max-width: 600px; max-height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.15) 0%, transparent 70%); filter: blur(60px); z-index: -1; pointer-events: none; }
+        .bg-mesh-2 { position: absolute; bottom: 10%; left: -10%; width: 50vw; height: 50vw; max-width: 500px; max-height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.1) 0%, transparent 70%); filter: blur(50px); z-index: -1; pointer-events: none; }
+        
+        .bg-grid {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        /* Glassmorphism */
+        .glass-nav { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-panel { background: linear-gradient(180deg, rgba(30,30,30,0.4) 0%, rgba(15,15,15,0.8) 100%); backdrop-filter: blur(20px); border: 1px solid var(--tw-colors-voda-border); }
+
+        /* Buttons */
+        .btn-primary { 
+            background: #ffffff; color: #000000; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.2); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.3); }
+
+        /* Premium Digital Card */
+        .premium-card {
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            position: relative; overflow: hidden;
+            box-shadow: 0 30px 60px -12px rgba(230, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid rgba(230, 0, 0, 0.4);
+            transform-style: preserve-3d;
+        }
+        .premium-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at top right, rgba(230,0,0,0.5) 0%, transparent 70%);
+            z-index: 1; pointer-events: none;
+        }
+        .card-shine {
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg); z-index: 2; pointer-events: none;
+        }
+
+        /* Typography */
+        .text-gradient { background: linear-gradient(to right, #ffffff, #a3a3a3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .text-gradient-red { background: linear-gradient(to right, #ff4d4d, #E60000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Reveal Animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Code Block */
+        .sms-code { font-family: 'Space Grotesk', monospace; font-size: 0.85rem; line-height: 1.8; }
+        .sms-code .highlight { color: #E60000; font-weight: bold; }
+        .sms-code .number { color: #10b981; }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-voda-red/30 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center relative overflow-hidden shadow-lg">
+                    <img src="https://www.vodafone.com/~/media/Images/V/vodafone/corp/logo/logo-dark.svg" alt="Logo" class="w-5 h-5 object-contain invert brightness-0 relative z-10">
+                    <div class="absolute inset-0 bg-voda-red/20 mix-blend-overlay"></div>
+                </div>
+                <span class="text-xl font-black tracking-widest text-white leading-none">V-Cash <span class="text-transparent bg-clip-text bg-gradient-to-r from-voda-light to-voda-red">PRO</span></span>
+            </div>
+            <div class="hidden lg:flex items-center gap-8 text-sm font-bold text-gray-400">
+                <a href="#how-it-works" class="hover:text-white transition-colors">بيشتغل إزاي؟</a>
+                <a href="#features" class="hover:text-white transition-colors">الحركات والتكات</a>
+                <a href="#security" class="hover:text-white transition-colors">في أمان الله (الخصوصية)</a>
+            </div>
+            <!-- Link to App -->
+            <a href="app" class="btn-primary font-extrabold py-2.5 px-6 rounded-full text-sm flex items-center gap-2">
+                دخول <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+        <div class="absolute inset-0 bg-grid -z-20"></div>
+        <div class="bg-mesh-1"></div>
+        <div class="bg-mesh-2"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
+            
+            <div class="text-center lg:text-right reveal active">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-voda-red/10 border border-voda-red/20 text-xs font-bold text-voda-light mb-8">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-voda-red opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-voda-red"></span>
+                    </span>
+                    تحليل مالي 100% شغال من غير نت (أوفلاين)
+                </div>
+                <h1 class="text-5xl lg:text-[5.5rem] font-black leading-[1.1] mb-6 text-white tracking-tight">
+                    محفظتك، <br>
+                    <span class="text-gradient-red">على نضافة</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    زهقت من تدوير الرسايل عشان تعرف مين بعتلك ومين نصب عليك؟ حوّل دوشة رسايل فودافون كاش للوحة تحكم شيك. تتبع مصاريفك، وصافي حساباتك مع صحابك بضغطة زرار ومن غير ما تشارك بياناتك مع حد (إحنا مش مباحث 😂)
+                </p>
+                <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                    <!-- Link to App -->
+                    <a href="app" class="btn-primary text-center font-extrabold py-4 px-10 rounded-2xl text-lg flex justify-center items-center gap-3 w-full sm:w-auto">
+                        ظبط دنيتك ببلاش <i class="fa-solid fa-bolt text-voda-red"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero 3D Card Showcase -->
+            <div class="relative flex justify-center items-center h-[400px] lg:h-[550px] reveal active" style="perspective: 1200px;">
+                <div id="card-tilt" class="w-full max-w-[400px] absolute z-20 cursor-pointer" style="transform-style: preserve-3d; transition: transform 0.1s ease;">
+                    <div class="premium-card w-full aspect-[1.586] rounded-[2rem] p-8 flex flex-col justify-between" style="transform: translateZ(50px);">
+                        <div class="card-shine animate-shine"></div>
+                        
+                        <div class="flex justify-between items-start z-10">
+                            <i class="fa-solid fa-microchip text-4xl lg:text-5xl text-[#d4af37] drop-shadow-md"></i>
+                            <i class="fa-solid fa-wifi text-2xl lg:text-3xl text-white/50 transform rotate-90"></i>
+                        </div>
+
+                        <div class="z-10 mt-auto">
+                            <p class="text-white/60 text-[10px] lg:text-[11px] font-bold mb-1 uppercase tracking-[0.2em]">الرصيد اللي حيلتك</p>
+                            <h3 class="text-[3rem] lg:text-[3.5rem] leading-none font-numbers font-black text-white drop-shadow-lg flex items-baseline gap-1">
+                                <span class="counter" data-target="24500">0</span><span class="text-xl lg:text-2xl text-white/70">.00</span> 
+                                <span class="text-xs lg:text-sm font-sans font-bold text-voda-red ml-2">EGP</span>
+                            </h3>
+                            
+                            <div class="flex justify-between items-end mt-4 lg:mt-6">
+                                <div class="font-numbers text-white/80 tracking-[0.2em] lg:tracking-[0.3em] text-sm lg:text-base font-bold flex gap-4">
+                                    <span>****</span> <span>****</span> <span>VPRO</span>
+                                </div>
+                                <img src="https://www.vodafone.com/~/media/Images/V/vodafone/corp/logo/logo-dark.svg" alt="Voda" class="w-8 h-8 lg:w-10 lg:h-10 invert opacity-80 object-contain">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Elements -->
+                <div class="absolute -right-4 top-4 lg:top-10 glass-panel border-emerald-500/20 p-3 lg:p-4 rounded-2xl shadow-2xl animate-float z-30 hidden md:flex items-center gap-3 w-40 lg:w-48">
+                    <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-arrow-down text-sm"></i></div>
+                    <div>
+                        <p class="text-[9px] lg:text-[10px] text-gray-400 font-bold mb-0.5">وارد من أحمد</p>
+                        <p class="font-bold font-numbers text-white text-sm lg:text-base">+1,200.00</p>
+                    </div>
+                </div>
+                
+                <div class="absolute -left-4 lg:-left-8 bottom-12 lg:bottom-20 glass-panel border-voda-red/20 p-3 lg:p-4 rounded-2xl shadow-2xl animate-float-delayed z-30 flex items-center gap-3 w-40 lg:w-48">
+                    <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-voda-red/10 flex items-center justify-center text-voda-red"><i class="fa-solid fa-arrow-up text-sm"></i></div>
+                    <div>
+                        <p class="text-[9px] lg:text-[10px] text-gray-400 font-bold mb-0.5">ضريبة الشركة 😂</p>
+                        <p class="font-bold font-numbers text-white text-sm lg:text-base">-15.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before / After (The Magic) -->
+    <section class="py-24 bg-[#050505] relative border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl lg:text-4xl font-black mb-4">من رسايل تعمي العين، <span class="text-voda-red">لواجهة عنب 🍇</span></h2>
+                <p class="text-gray-400 text-lg">وداعاً لـ "يا ترى أنا حولتله كام؟"، سيب الذكاء الاصطناعي يظبطلك الأداء.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <!-- Code / SMS Side -->
+                <div class="glass-panel p-6 lg:p-8 rounded-[2rem] reveal relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#050505] opacity-80 z-10 pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10 relative z-20">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-comment-sms text-gray-400 text-xl"></i>
+                            <h3 class="font-bold text-gray-300">سجل الرسايل بتاعتك</h3>
+                        </div>
+                        <span class="text-[10px] bg-white/10 px-2 py-1 rounded text-gray-400 font-numbers">.TXT</span>
+                    </div>
+                    <div class="sms-code space-y-4 text-left relative z-20 opacity-70 group-hover:opacity-100 transition-opacity" dir="ltr">
+                        <p>Received from VF-Cash on 2023-10-15 14:30<br>
+                        تم تحويل <span class="number">500</span> جنيه لرقم <span class="number">01012345678</span> مصاريف الخدمة <span class="highlight">1</span> جنيه رصيدك الحالي <span class="number">1200</span></p>
+                        <hr class="border-white/5 my-2">
+                        <p>رقم <span class="number">01012345678</span> شحنلك ب <span class="number">200</span> ج رصيدك <span class="number">1400</span></p>
+                        <hr class="border-white/5 my-2">
+                        <p>تم سحب <span class="highlight">1000</span> جنيه من الصراف الالي...</p>
+                    </div>
+                </div>
+
+                <!-- UI Render Side -->
+                <div class="relative reveal delay-200">
+                    <div class="absolute top-1/2 -right-6 lg:-right-12 -translate-y-1/2 w-12 h-12 bg-voda-red rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(230,0,0,0.6)] z-30 border-4 border-[#050505] hidden lg:flex">
+                        <i class="fa-solid fa-arrow-left-long text-white"></i>
+                    </div>
+                    
+                    <div class="bg-[#0a0a0a] p-6 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                            <h3 class="font-black text-white text-xl">الكنترول</h3>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-chart-pie text-voda-red"></i></div>
+                        </div>
+                        
+                        <div class="glass-panel p-4 rounded-2xl flex justify-between items-center mb-4 border-voda-red/30 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-1 h-full bg-voda-red"></div>
+                            <div class="flex items-center gap-4 w-[65%]">
+                                <div class="w-12 h-12 rounded-full bg-gray-900 border border-white/5 flex items-center justify-center text-gray-400"><i class="fa-solid fa-user"></i></div>
+                                <div><p class="font-bold text-[14px] text-white">01012345678</p><p class="text-[10px] text-gray-500 mt-1">صاحبك اللي مابيردش</p></div>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[9px] text-gray-500 font-bold mb-1 uppercase">مديون بـ</p>
+                                <p class="font-bold font-numbers text-white text-lg" dir="ltr">-300.00</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="glass-panel p-3.5 rounded-xl">
+                                <div class="w-6 h-6 rounded-full bg-white/5 text-gray-400 flex items-center justify-center mb-2"><i class="fa-solid fa-money-bill-wave text-[10px]"></i></div>
+                                <p class="text-[10px] text-gray-400 mb-1">سحبت كاش</p>
+                                <p class="font-numbers font-bold text-white">1,000.00</p>
+                            </div>
+                            <div class="glass-panel p-3.5 rounded-xl border-voda-red/20 bg-voda-red/5">
+                                <div class="w-6 h-6 rounded-full bg-voda-red/20 text-voda-red flex items-center justify-center mb-2"><i class="fa-solid fa-percent text-[10px]"></i></div>
+                                <p class="text-[10px] text-voda-red/80 mb-1">الرسوم اللي شفطوها</p>
+                                <p class="font-numbers font-bold text-voda-red">1.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-black mb-4">الخلاصة في 3 خطوات</h2>
+                <p class="text-gray-400 max-w-xl mx-auto">عشان إحنا بنخاف على بياناتك أكتر منك، الموضوع كله في إيدك وإنت اللي بترفع الملف.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="glass-panel p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-full bg-[#111] border border-white/10 mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 text-white shadow-inner">1</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">نزل برنامج سحب الرسايل</h3>
+                    <p class="text-gray-400 text-sm mb-6">استخدم تطبيق "SMS Exporter" (أمان ومجاني) من المتجر عشان نلم الرسايل.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.smartpositive.sms_exporter" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 px-6 rounded-full text-sm transition-colors w-full border border-white/5">
+                        <i class="fa-brands fa-google-play"></i> Google Play
+                    </a>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-panel p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300 delay-100">
+                    <div class="w-16 h-16 rounded-full bg-[#111] border border-white/10 mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 text-white shadow-inner">2</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">طلّع كشف الحساب</h3>
+                    <p class="text-gray-400 text-sm mb-6">اختار رسايل فودافون كاش واحفظها في ملف <span class="text-voda-red font-bold font-numbers">.TXT</span> صغنون.</p>
+                    <div class="bg-black/50 border border-white/5 rounded-xl py-3 px-4 flex items-center justify-center gap-3 text-gray-500 w-full">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span class="text-xs font-numbers font-bold">Export_SMS.txt</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="premium-card p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300 delay-200 border-none">
+                    <div class="w-16 h-16 rounded-full bg-white text-black mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 shadow-glow relative z-10">3</div>
+                    <h3 class="text-lg font-bold mb-3 text-white relative z-10">ارمي الملف وشوف السحر</h3>
+                    <p class="text-gray-300 text-sm mb-6 relative z-10">ارفع الملف هنا، والسيستم بتاعنا هيعملك البحر طحينة ويظبطلك ميزانيتك في ثانية.</p>
+                    <a href="app.html" class="inline-flex items-center justify-center gap-2 bg-white text-black font-extrabold py-2.5 px-6 rounded-full text-sm transition-transform hover:scale-105 w-full relative z-10">
+                        دوس يا بطل <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Bento Grid -->
+    <section id="features" class="py-24 bg-[#000000] border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16 reveal">
+                <h2 class="text-3xl font-black mb-4">متظبط عشان يخليك 👑 <span class="text-gradient-red">باشا في نفسك</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Contacts -->
+                <div class="md:col-span-2 glass-panel rounded-[2rem] p-8 reveal relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                    <div class="relative z-10 mb-8">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white mb-4"><i class="fa-solid fa-users text-xl"></i></div>
+                        <h3 class="text-2xl font-black text-white mb-2">مين له إيه ومين عليه إيه؟</h3>
+                        <p class="text-gray-400 text-sm max-w-md leading-relaxed">السيستم بيسجل كل رقم اتعاملت معاه، بيجمع الحوالات، وبيحسبلك "الصافي" عشان تعرف مين واكل حقك ومين بتطالبه بفلوس.</p>
+                    </div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 w-full max-w-sm relative z-10 shadow-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div><p class="text-sm font-bold text-white">صافي الحساب معاك</p><p class="text-[10px] text-gray-500">رقم الهاتف: 010****</p></div>
+                        </div>
+                        <p class="font-numbers font-bold text-emerald-400">+4,500</p>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div class="glass-panel rounded-[2rem] p-8 reveal delay-100 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-colors"></div>
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white mb-4 relative z-10"><i class="fa-solid fa-chart-pie text-xl"></i></div>
+                    <h3 class="text-xl font-black text-white mb-2 relative z-10">فلوسك طارت في إيه؟</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 relative z-10">بيفصل السحب، الشحن، والدفع الأونلاين. عشان تبطل تسأل نفسك الفلوس دي خلصت إمتى!</p>
+                    <div class="flex gap-2 flex-wrap relative z-10">
+                        <span class="text-[10px] px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white">سحب ATM</span>
+                        <span class="text-[10px] px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white">دفع VCN</span>
+                    </div>
+                </div>
+
+                <!-- Hidden Fees -->
+                <div class="glass-panel rounded-[2rem] p-8 reveal relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-voda-red/10 blur-[50px] rounded-full group-hover:bg-voda-red/20 transition-colors"></div>
+                    <div class="w-12 h-12 rounded-full bg-voda-red/10 flex items-center justify-center text-voda-red mb-4 relative z-10"><i class="fa-solid fa-magnifying-glass-dollar text-xl"></i></div>
+                    <h3 class="text-xl font-black text-white mb-2 relative z-10">الرسوم اللي بتسف الرصيد</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">بتدفع كام رسوم تحويل واستعلام؟ السيستم هيجمعلك الفلوس اللي اتشفطت منك في رقم واحد (عشان تتصدم براحتك).</p>
+                </div>
+
+                <!-- UX -->
+                <div class="md:col-span-2 glass-panel rounded-[2rem] p-8 reveal delay-100 flex flex-col sm:flex-row items-center gap-8 border-voda-red/20 bg-gradient-to-l from-voda-red/5 to-transparent">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-black text-white mb-2">دلع مستخدمين مش تجربة</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">واجهة ناعمة زي الحرير، تحس إنك فاتح تطبيق بنك أجنبي مش مجرد أداة بسيطة، متصممة تمشي مع موبايلك حلاوة.</p>
+                        <a href="app.html" class="text-white text-sm font-bold border-b border-voda-red pb-1 hover:text-voda-red transition-colors">خد لفة في الواجهة <i class="fa-solid fa-arrow-left text-[10px] mr-1"></i></a>
+                    </div>
+                    <div class="w-full sm:w-1/3 bg-[#000] rounded-3xl p-2 border border-white/10 shadow-2xl shrink-0 aspect-[1/1.5] relative flex justify-center items-end pb-4">
+                        <div class="w-[80%] h-12 rounded-full bg-gray-900 border border-white/10 flex justify-between items-center px-4">
+                            <i class="fa-solid fa-wallet text-white text-sm"></i>
+                            <i class="fa-solid fa-clock-rotate-left text-gray-600 text-sm"></i>
+                            <i class="fa-solid fa-users text-gray-600 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zero-Knowledge Security -->
+    <section id="security" class="py-24 relative overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 bg-mesh-1 opacity-30"></div>
+        <div class="max-w-5xl mx-auto px-6 relative z-10">
+            <div class="glass-panel border-voda-red/30 rounded-[3rem] p-10 lg:p-16 text-center flex flex-col items-center shadow-[0_0_50px_rgba(230,0,0,0.1)] reveal relative overflow-hidden">
+                
+                <div class="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-3xl lg:text-4xl text-white mb-8 relative z-10 shadow-lg">
+                    <div class="absolute inset-0 rounded-full border-2 border-voda-red animate-pulse-glow opacity-50"></div>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                
+                <h2 class="text-3xl lg:text-4xl font-black text-white mb-4 relative z-10">مابنشوفش بياناتك.. <span class="text-voda-red">وعهد الله ✋.</span></h2>
+                <p class="text-gray-400 text-base lg:text-lg leading-relaxed mb-10 max-w-2xl relative z-10">
+                    الموضوع ماشي بمبدأ اللي في جيبك في جيبك. الملف بيتقري جوه متصفحك إنت بس (Client-Side). أول ما تقفل الصفحة، كل حاجة بتتبخر كأنها ماحصلتش.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full relative z-10">
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-server text-voda-red mb-3 text-2xl"></i><p class="text-sm font-bold text-white">مفيش سيرفرات بتراقبك</p></div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-wifi text-gray-500 mb-3 text-2xl relative"><div class="absolute inset-0 bg-gray-500 w-full h-[2px] rotate-45 top-1/2"></div></i><p class="text-sm font-bold text-white">شغال من غير نت (أوفلاين)</p></div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-trash-can text-emerald-500 mb-3 text-2xl"></i><p class="text-sm font-bold text-white">قفلت؟ كله طار 💨</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-24 pb-12 bg-[#000000] border-t border-white/5 text-center relative overflow-hidden">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-voda-red/20 blur-[150px] pointer-events-none"></div>
+        <div class="max-w-2xl mx-auto px-6 reveal relative z-10 mb-16">
+            <h2 class="text-4xl lg:text-5xl font-black text-white mb-6 tracking-tight">رجّع هيبتك قدام محفظتك!</h2>
+            <p class="text-gray-400 mb-10 text-lg">ارفع الملف دلوقتي وشوف السحر يا سيدي.</p>
+            <a href="app" class="btn-primary inline-flex items-center gap-3 font-extrabold py-4 px-12 rounded-full text-lg w-full sm:w-auto justify-center">
+                افتح الخزنة <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="border-t border-white/5 pt-8 text-xs text-gray-600 font-bold px-6 flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto tracking-wide">
+            <p>&copy; 2026 V-Cash Pro Smart Analyzer. Designed for privacy.</p>
+            <p class="font-sans font-normal">هذه الأداة ملهاش أي علاقة بشركة ڤودافون.. إحنا غلابة وبنساعد بعض.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Scroll Reveal
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 50) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); 
+
+        // Number Counter Animation
+        const counter = document.querySelector('.counter');
+        const target = +counter.getAttribute('data-target');
+        let count = 0;
+        
+        const updateCounter = () => {
+            const increment = target / 80;
+            if(count < target) {
+                count += increment;
+                counter.innerText = Math.ceil(count).toLocaleString('en-US');
+                setTimeout(updateCounter, 20);
+            } else {
+                counter.innerText = target.toLocaleString('en-US');
+            }
+        };
+        setTimeout(updateCounter, 800);
+
+        // 3D Card Hover Effect (Desktop Only)
+        const card = document.getElementById('card-tilt');
+        if(card && window.matchMedia("(min-width: 1024px)").matches) {
+            const container = card.parentElement;
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2; 
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -15; 
+                const rotateY = ((x - centerX) / centerX) * 15;
+                
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            });
+        }
+    </script>
+</body>
+</html>
