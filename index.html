@@ -87,7 +87,6 @@
         @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { to { transform: scale(1); opacity: 1; } }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(230,0,0,0.4); } 70% { box-shadow: 0 0 0 15px rgba(230,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(230,0,0,0); } }
 
         /* Floating Nav */
         .floating-dock { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 8px 16px; }
@@ -101,10 +100,6 @@
         .action-btn { transition: transform 0.2s, background 0.2s; }
         .action-btn:active { transform: scale(0.92); }
 
-        /* Background Meshes */
-        .bg-mesh-1 { position: fixed; top: -10%; left: -20%; width: 70vw; height: 70vw; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.15) 0%, transparent 60%); filter: blur(60px); z-index: -1; }
-        .bg-mesh-2 { position: fixed; bottom: -10%; right: -20%; width: 60vw; height: 60vw; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.1) 0%, transparent 60%); filter: blur(50px); z-index: -1; }
-
         /* Modals */
         .modal-sheet { transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); transform: translateY(100%); }
         .modal-active .modal-sheet { transform: translateY(0); }
@@ -115,8 +110,8 @@
 
 <body class="selection:bg-voda-red/30 relative">
 
-    <div class="bg-mesh-1"></div>
-    <div class="bg-mesh-2"></div>
+    <div class="fixed top--10 left--20 w-[70vw] h-[70vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.15)_0%,transparent_60%)] blur-[60px] z-[-1]"></div>
+    <div class="fixed bottom--10 right--20 w-[60vw] h-[60vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.1)_0%,transparent_60%)] blur-[50px] z-[-1]"></div>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-safe mt-4 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white px-5 py-3.5 rounded-full shadow-glow transition-all duration-400 transform -translate-y-32 opacity-0 z-[100] flex items-center gap-3 font-bold text-sm border border-white/10 w-max max-w-[90%] backdrop-blur-xl">
@@ -132,7 +127,7 @@
             <i class="fa-solid fa-fingerprint text-4xl text-white opacity-80"></i>
         </div>
         <h2 class="text-2xl font-black text-white mb-2" id="loadingTitle">تحليل ذكي للبيانات...</h2>
-        <p class="text-gray-400 text-sm max-w-[250px]">يتم قراءة الأنماط المعقدة وتشفير البيانات محلياً...</p>
+        <p class="text-gray-400 text-sm max-w-[250px]">يتم معالجة النصوص العشوائية واستخراج الأرقام بدقة...</p>
     </div>
 
     <div class="w-full max-w-md mx-auto relative pt-safe pb-safe px-5 min-h-screen flex flex-col">
@@ -158,7 +153,7 @@
             <input type="file" id="smsFile" accept=".txt" class="hidden" onchange="handleFileUpload(event)">
         </header>
 
-        <!-- Empty State (Onboarding) -->
+        <!-- Empty State -->
         <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-center pb-20 animate-slide-up delay-100">
             <div class="w-40 h-40 relative mb-8">
                 <div class="absolute inset-0 bg-gradient-to-tr from-voda-red to-[#4a0000] rounded-3xl transform rotate-12 opacity-40 blur-lg"></div>
@@ -171,7 +166,7 @@
                 </div>
             </div>
             <h2 class="text-3xl font-black text-white mb-3 tracking-tight">إدارة مالية <span class="text-voda-red">أذكى</span></h2>
-            <p class="text-sm text-gray-400 mb-10 max-w-[280px] mx-auto leading-relaxed">اكتشف تفاصيل نفقاتك، رصيدك الختامي، وإحصائيات تحويلاتك بدقة متناهية من خلال ملف رسائل فودافون كاش.</p>
+            <p class="text-sm text-gray-400 mb-10 max-w-[280px] mx-auto leading-relaxed">اكتشف تفاصيل نفقاتك، رصيدك الختامي، وإحصائيات تحويلاتك من خلال ملف رسائل فودافون كاش.</p>
             
             <button onclick="document.getElementById('smsFile').click()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold text-lg flex justify-center items-center gap-3 hover:scale-[1.02] transition-transform shadow-[0_10px_30px_rgba(255,255,255,0.15)]">
                 مزامنة السجلات الآن <i class="fa-solid fa-bolt text-voda-red"></i>
@@ -182,24 +177,19 @@
         <!-- Dashboard Container -->
         <div id="dashboardContent" class="hidden flex-1 flex flex-col h-full">
             
-            <!-- TAB 1: HOME (Analytics) -->
+            <!-- TAB 1: HOME -->
             <div id="view-home" class="animate-fade-in flex-1">
-                
-                <!-- Digital Debit Card -->
                 <div class="premium-card rounded-[1.5rem] p-6 mb-6 animate-pop shadow-glow-lg aspect-[1.586] flex flex-col justify-between z-10">
                     <div class="card-shine"></div>
-                    
                     <div class="relative z-10 flex justify-between items-start">
                         <i class="fa-solid fa-microchip text-4xl text-[#d4af37] drop-shadow-md"></i>
                         <i class="fa-solid fa-wifi text-2xl text-white/70 transform rotate-90"></i>
                     </div>
-
                     <div class="relative z-10 mt-auto">
                         <p class="text-white/60 text-[10px] font-bold mb-1 uppercase tracking-[0.2em]">الرصيد المتاح</p>
                         <h2 class="text-[2.75rem] leading-none font-black font-numbers text-white drop-shadow-md flex items-baseline gap-1" id="finalBalance">
                             0<span class="text-2xl text-white/70">.00</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>
                         </h2>
-                        
                         <div class="flex justify-between items-end mt-4">
                             <div class="font-numbers text-white/80 tracking-widest text-sm font-bold flex gap-3">
                                 <span>****</span> <span>****</span> <span>****</span> <span class="text-white">VPRO</span>
@@ -209,7 +199,6 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
                 <div class="flex justify-between items-center mb-8 px-2 animate-slide-up delay-100">
                     <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setFilter('transfer_out')">
                         <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-up"></i></div>
@@ -229,7 +218,6 @@
                     </div>
                 </div>
 
-                <!-- Cash Flow Bar -->
                 <div class="glass-panel rounded-2xl p-5 mb-6 animate-slide-up delay-200">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-sm font-bold text-white">حركة الأموال (Cash Flow)</h3>
@@ -251,7 +239,6 @@
                     </div>
                 </div>
 
-                <!-- Breakdown Widgets -->
                 <h3 class="text-lg font-black text-white mb-3 px-1 animate-slide-up delay-300">تحليل النفقات</h3>
                 <div class="grid grid-cols-2 gap-3 animate-slide-up delay-300 mb-8">
                     <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
@@ -296,8 +283,6 @@
                         <p class="text-xs text-gray-400 font-semibold">تتبع كل قرش تم إنفاقه أو استلامه</p>
                     </div>
                 </div>
-
-                <!-- Filter Chips -->
                 <div class="flex gap-2 overflow-x-auto hide-scrollbar mb-4 shrink-0 pb-2 px-1">
                     <button onclick="setFilter('all')" id="filter-all" class="filter-chip active bg-white text-black px-4 py-2 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition-colors">الكل</button>
                     <button onclick="setFilter('transfer_in')" id="filter-transfer_in" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">وارد</button>
@@ -305,7 +290,6 @@
                     <button onclick="setFilter('withdrawal')" id="filter-withdrawal" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">سحب كاش</button>
                     <button onclick="setFilter('deposit')" id="filter-deposit" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">إيداع</button>
                 </div>
-
                 <div id="allTxList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
             </div>
 
@@ -318,18 +302,16 @@
                     </div>
                     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center font-numbers text-sm text-black font-black shadow-[0_0_15px_rgba(255,255,255,0.2)]" id="peopleCount">0</div>
                 </div>
-
                 <div class="relative mb-5 shrink-0">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="text" id="searchInput" oninput="filterPeople()" placeholder="ابحث برقم الموبايل أو الاسم..." class="w-full glass-panel py-3.5 pr-12 pl-4 outline-none focus:border-white/30 focus:bg-white/5 rounded-2xl transition-all text-sm text-white placeholder-gray-500 shadow-inner">
                 </div>
-
                 <div id="peopleList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
             </div>
         </div>
     </div>
 
-    <!-- Floating Bottom Navigation -->
+    <!-- Floating Nav -->
     <div id="bottomNavWrapper" class="fixed bottom-0 left-0 right-0 z-40 hidden pb-safe-offset flex justify-center pointer-events-none" style="padding-bottom: max(20px, env(safe-area-inset-bottom));">
         <nav class="floating-dock w-full max-w-[320px] flex justify-between items-center shadow-[0_10px_40px_rgba(0,0,0,0.8)] pointer-events-auto">
             <button onclick="switchTab('home')" id="nav-home" class="nav-item active flex-1 py-3 flex flex-col items-center justify-center">
@@ -347,11 +329,10 @@
         </nav>
     </div>
 
-    <!-- Bottom Sheet Modal for Contact Details -->
+    <!-- Modals -->
     <div id="personModal" onclick="closeModal('personModal')" class="fixed inset-0 bg-black/80 backdrop-blur-sm modal-overlay flex flex-col justify-end z-[70] hidden">
         <div onclick="event.stopPropagation()" class="glass-panel w-full max-w-md mx-auto p-6 rounded-t-[2.5rem] modal-sheet h-[85vh] flex flex-col border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
             <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 shrink-0"></div>
-            
             <div class="flex justify-between items-start mb-6 shrink-0">
                 <div class="flex items-center gap-4 w-[80%]">
                     <div class="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white text-xl shadow-lg"><i class="fa-solid fa-user"></i></div>
@@ -362,7 +343,6 @@
                 </div>
                 <button type="button" onclick="closeModal('personModal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
             <div class="bg-[#0a0a0a] rounded-2xl p-5 mb-6 border border-white/5 shrink-0 flex justify-between items-center relative overflow-hidden shadow-inner">
                 <div class="absolute right-0 top-0 w-1.5 h-full bg-voda-red" id="modalNetBar"></div>
                 <div>
@@ -374,22 +354,16 @@
                     <p class="text-[10px] font-bold text-white flex justify-between gap-3 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5"><span>الصادر:</span> <span class="font-numbers" id="modalTotalOut">0</span></p>
                 </div>
             </div>
-            
             <h4 class="text-xs font-bold text-gray-400 mb-3 shrink-0 px-1 uppercase tracking-wider">سجل العمليات مع الشخص</h4>
             <div id="modalTxList" class="space-y-2.5 overflow-y-auto hide-scrollbar flex-1 pb-safe"></div>
         </div>
     </div>
 
     <script>
-        // --- GLOBAL STATE ---
-        let appData = { 
-            finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, 
-            people: {}, allTransactions: []
-        };
+        let appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions: [] };
         let peopleArray =[];
         let currentFilter = 'all';
 
-        // --- UTILS ---
         const formatMoney = (num) => parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const cleanNumber = (str) => str ? parseFloat(str.replace(/,/g, '')) : 0;
         
@@ -401,7 +375,6 @@
             setTimeout(() => t.classList.add('-translate-y-32', 'opacity-0'), 3500);
         }
 
-        // --- ANIMATIONS ---
         function animateValue(obj, start, end, duration, format = false) {
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -409,19 +382,15 @@
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 const easeOut = 1 - Math.pow(1 - progress, 3);
                 const current = start + easeOut * (end - start);
-                
                 if (format) {
                     let split = formatMoney(current).split('.');
                     obj.innerHTML = `${split[0]}<span class="text-2xl text-white/70">.${split[1]}</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>`;
-                } else {
-                    obj.innerText = formatMoney(current);
-                }
+                } else { obj.innerText = formatMoney(current); }
                 if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
 
-        // --- NAVIGATION ---
         function switchTab(tab) {
             ['home', 'transactions', 'contacts'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
@@ -432,7 +401,6 @@
             view.classList.remove('animate-fade-in');
             void view.offsetWidth; 
             view.classList.add('animate-fade-in');
-            
             document.getElementById(`nav-${tab}`).classList.add('active');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
@@ -451,14 +419,13 @@
             setTimeout(() => { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = ''; }, 400);
         }
 
-        // --- NEW SMART PARSER ENGINE ---
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             document.getElementById('loadingScreen').classList.remove('hidden');
             document.getElementById('loadingScreen').classList.add('flex');
-            setStatus('جاري المزامنة...', 'bg-yellow-400 text-yellow-400');
+            setStatus('جاري المعالجة...', 'bg-yellow-400 text-yellow-400');
 
             const reader = new FileReader();
             reader.onload = function(e) { 
@@ -466,69 +433,81 @@
                     parseVodafoneData(e.target.result);
                     document.getElementById('loadingScreen').classList.add('hidden');
                     document.getElementById('loadingScreen').classList.remove('flex');
-                }, 1200);
+                }, 800);
             };
             reader.readAsText(file);
             event.target.value = ''; 
         }
 
+        // --- BULLETPROOF HEURISTIC PARSER ---
         function parseVodafoneData(text) {
             if(!text || text.trim() === "") { showToast('الملف فارغ', 'error'); return; }
 
             appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions:[] };
             
-            // Split by separator lines commonly found in exported files
-            const blocks = text.split(/==================================================|-----------------------------------------------------/);
+            // Clean invisible Arabic text modifiers that break regex
+            const cleanText = text.replace(/[\u200E\u200F\u202A-\u202E\u200B-\u200D\uFEFF]/g, '');
+
+            // Split aggressively by lines of equal signs, hyphens, OR double newlines (Blank Lines)
+            const blocks = cleanText.split(/={10,}|-{10,}|\n\s*\n|\r\n\s*\r\n/);
             
-            let latestDateObj = new Date(0);
+            let globalFallbackDate = new Date(); // Fallback if no date is found
 
             blocks.forEach(block => {
-                const msg = block.trim();
+                let msg = block.trim();
                 if(msg.length < 10) return;
 
-                // 1. Skip system errors & OTPs to avoid false triggers
-                if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام)/.test(msg)) {
-                    return; // Fast fail
+                // Skip pure OTP/Error messages unless they contain a transaction keyword
+                if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام|سحب)/.test(msg)) {
+                    return; 
                 }
 
-                let dateStr = "تاريخ غير معروف", dateObj = new Date(0);
+                let dateStr = "غير محدد";
+                let dateObj = new Date(globalFallbackDate.getTime()); 
+
+                // Look for standard exported format header
+                const headerMatch = msg.match(/on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
                 
-                // Extract Primary Date from header (e.g. "Received from VF-Cash on 2024-12-04 10:08")
-                const headerMatch = msg.match(/Received from (?:VF-Cash|Vodafone) on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
-                if (headerMatch) { 
-                    dateStr = headerMatch[1]; 
-                    dateObj = new Date(dateStr.replace(/-/g, '/')); 
-                } else {
-                    // Fallback to inside-text dates if header is missing (e.g. "تاريخ العملية 18:39 25-11-03")
-                    const innerDateAr = msg.match(/تاريخ العملية\s*(\d{2}:\d{2})\s*(\d{2}-\d{2}-\d{2})/);
-                    if(innerDateAr) {
-                        dateStr = `20${innerDateAr[2]} ${innerDateAr[1]}`;
-                        dateObj = new Date(dateStr.replace(/-/g, '/'));
+                // Look for inline date formats (15:54 26-04-10 or 18-04-26 11:50)
+                const internalDateMatch = msg.match(/تاريخ العملية[:\s]*(\d{2}:\d{2})?\s*(\d{2}-\d{2}-\d{2})?\s*(\d{2}:\d{2})?/i);
+
+                if (headerMatch) {
+                    dateStr = headerMatch[1];
+                    dateObj = new Date(dateStr.replace(/-/g, '/'));
+                } else if (internalDateMatch) {
+                    let time = internalDateMatch[1] || internalDateMatch[3] || "00:00";
+                    let datePart = internalDateMatch[2];
+                    if(datePart) {
+                        let parts = datePart.split('-');
+                        let year = parts[0].length === 2 ? "20" + parts[0] : parts[0];
+                        dateStr = `${year}-${parts[1]}-${parts[2]} ${time}`;
+                        let tempDate = new Date(dateStr.replace(/-/g, '/'));
+                        if (!isNaN(tempDate)) dateObj = tempDate;
                     }
                 }
+                
+                // Update fallback date so next message without a date uses this one
+                if (!isNaN(dateObj)) globalFallbackDate = dateObj;
 
-                // 2. Extract Current Balance (The most reliable indicator of final state)
-                // Covers: "رصيدك الحالي 400.05", "رصيد حسابك فى فودافون كاش الحالي 400.05", "Available Balance: 77.75", "balance is 1309.25"
+                // --- Balance Extraction ---
                 const balanceMatch = msg.match(/(?:رصيدك الحالي|رصيد حسابك[^\d]*|رصيد محفظتك الحالي|Vodafone Cash balance is|Available Balance:)[:\s]*(?:EGP\s*)?([\d\.,]+)/i);
-                if (balanceMatch && dateObj >= latestDateObj) {
+                if (balanceMatch) {
+                    // Update final balance based on the absolute latest transaction processed
                     appData.finalBalance = cleanNumber(balanceMatch[1]);
-                    latestDateObj = dateObj;
                 }
 
                 let isProcessed = false;
 
-                // --- PATTERN 1: P2P IN (Received Money) ---
-                // AR: تم استلام مبلغ 3000 جنيه من رقم 01065965318 المسجل بإسم Henry G Massoud على رقم محفظتك
-                // EN: Received EGP2,000 from 00201094360033
-                const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جنيه?\s*من رقم\s*(\d+)/i);
+                // --- 1. P2P IN ---
+                const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?من رقم\s*(\d+)/i);
                 const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|\d+)/i);
                 
                 if (!isProcessed && (p2pInAr || p2pInEn)) {
                     let amt = cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1]);
                     let rawPhone = p2pInAr ? p2pInAr[2] : p2pInEn[2];
-                    let phone = rawPhone.replace(/^002/, ''); // Normalize phone
+                    let phone = rawPhone.replace(/^002/, ''); 
                     
-                    const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+)(?:؛|رصيدك|على رقم|$)/i);
+                    const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+?)(?:؛|رصيدك|على رقم|$)/i);
                     let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي";
 
                     addPersonTx(phone, name, 'in', amt, dateObj, dateStr, "استلام تحويل");
@@ -537,11 +516,9 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 2: P2P OUT (Sent Money) ---
-                // AR: تم تحويل 50.0 جنيه لرقم 01044741547. مصاريف الخدمة 1.0 جنيه.
-                // EN: 5175 L.E were successfully transferred to 01068969074 the transfer fee is 1 LE
-                const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جنيه?\s*لرقم\s*(\d+).*?مصاريف الخدمة\s*([\d\.,]+)/i);
-                const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+).*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
+                // --- 2. P2P OUT ---
+                const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?لرقم\s*(\d+)[\s\S]*?مصاريف الخدمة\s*([\d\.,]+)/i);
+                const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+)[\s\S]*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
 
                 if (!isProcessed && (p2pOutAr || p2pOutEn)) {
                     let amt = cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1]);
@@ -555,10 +532,9 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 3: ONLINE / FAWRY PAYMENTS ---
-                // AR: تم دفع مبلغ 257.14جنية لNzmly.
+                // --- 3. ONLINE / FAWRY PAYMENTS ---
                 const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)([^.]+)/i);
-                const vcnIssue = msg.match(/اصدار كارت الدفع.*?خصم\s*([\d\.,]+)/i);
+                const vcnIssue = msg.match(/اصدار كارت الدفع[\s\S]*?خصم\s*([\d\.,]+)/i);
                 
                 if (!isProcessed && onlinePay) {
                     let amt = cleanNumber(onlinePay[1]);
@@ -570,10 +546,8 @@
                 }
                 if (vcnIssue) { appData.feesPaid += cleanNumber(vcnIssue[1]); }
 
-                // --- PATTERN 4: TELECOM - RECHARGE SELF ---
-                // AR: تم شحن رصيد موبايلك ب 10.01ج بنجاح وخصم 14.3ج من محفظتك
-                // EN: 147 L.E was successfully recharged to your mobile
-                const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة).*?خصم\s*([\d\.,]+)/i);
+                // --- 4. TELECOM - RECHARGE SELF ---
+                const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة)[\s\S]*?خصم\s*([\d\.,]+)/i);
                 const selfRechEn = msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
                 
                 if (!isProcessed && (selfRechAr || selfRechEn)) {
@@ -584,10 +558,8 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 5: TELECOM - RECHARGE OTHERS ---
-                // AR: تم شحن رصيد ب 16.5 ج بنجاح إلى رقم 01070954997 وخصم 16.5 ج من محفظتك
-                const rechOut = msg.match(/شحن رصيد ب.*?إلى رقم\s*(\d+)\s*وخصم\s*([\d\.,]+)/i);
-                
+                // --- 5. TELECOM - RECHARGE OTHERS ---
+                const rechOut = msg.match(/شحن رصيد ب[\s\S]*?إلى رقم\s*(\d+)[\s\S]*?وخصم\s*([\d\.,]+)/i);
                 if (!isProcessed && rechOut) {
                     let phone = rechOut[1];
                     let deductedAmt = cleanNumber(rechOut[2]);
@@ -599,8 +571,7 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 6: TELECOM - RECEIVED FROM OTHERS ---
-                // AR: رقم 01064164867 شحنلك ب 19.5 ج بنجاح من خلال خدمة فودافون كاش.
+                // --- 6. TELECOM - RECEIVED FROM OTHERS ---
                 const rechIn = msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
                 if (!isProcessed && rechIn) {
                     let phone = rechIn[1];
@@ -612,8 +583,7 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 7: WITHDRAWALS (ATM/BRANCH) ---
-                // AR: تم سحب مبلغ 500.00 جنية من محفظة
+                // --- 7. WITHDRAWALS (ATM/BRANCH) ---
                 const withdrawal = msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
                 if (!isProcessed && withdrawal) {
                     let amt = cleanNumber(withdrawal[1]);
@@ -623,8 +593,7 @@
                     isProcessed = true;
                 }
 
-                // --- PATTERN 8: DEPOSITS & CASHBACKS ---
-                // AR: تم إيداع 1.0 جنيه رصيدك الحالي
+                // --- 8. DEPOSITS & CASHBACKS ---
                 const deposit = msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
                 if (!isProcessed && deposit) {
                     let amt = cleanNumber(deposit[1]);
@@ -638,14 +607,13 @@
             });
 
             if (appData.parsedCount === 0) {
-                showToast('عفواً، لم يتم العثور على أي عمليات مالية قابلة للتحليل.', 'error'); 
+                showToast('لم يتم العثور على أي عمليات قابلة للتحليل.', 'error'); 
                 setStatus('فشل المزامنة', 'bg-voda-red text-voda-red'); 
                 return;
             }
 
-            // Object to Array mapping and sorting
             peopleArray = Object.values(appData.people).sort((a, b) => (b.totalIn + b.totalOut) - (a.totalIn + a.totalOut));
-            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj); // Newest first
+            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj);
             
             buildUI();
         }
@@ -666,7 +634,6 @@
             appData.allTransactions.push({ category, type, amount, dateObj, dateStr, title, subtitle });
         }
 
-        // --- UI RENDERER ---
         function buildUI() {
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('dashboardContent').classList.remove('hidden');
@@ -675,7 +642,6 @@
             setStatus('متزامن محلياً', 'bg-emerald-500 text-emerald-400');
             showToast('تمت المزامنة وتحليل البيانات بنجاح!');
 
-            // Apply Values & Animations
             animateValue(document.getElementById('finalBalance'), 0, appData.finalBalance, 1200, true);
             animateValue(document.getElementById('totalIn'), 0, appData.totalInflow, 1000);
             animateValue(document.getElementById('totalOut'), 0, appData.totalOutflow, 1000);
@@ -699,7 +665,6 @@
             renderAllTransactions();
         }
 
-        // --- HISTORY TAB LOGIC ---
         function setFilter(cat) {
             currentFilter = cat;
             document.querySelectorAll('.filter-chip').forEach(btn => {
@@ -739,10 +704,9 @@
                     default: icon = 'fa-receipt'; bgIcon = 'bg-gray-800 text-gray-300';
                 }
 
-                // Date Formatting cleanly
                 const d = tx.dateStr.split(' ');
                 const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
-                const delay = Math.min(idx * 20, 400); // Fast cascade effect
+                const delay = Math.min(idx * 20, 400);
 
                 return `
                 <div class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 hover:bg-white/5 transition-colors animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
@@ -760,7 +724,6 @@
             }).join('');
         }
 
-        // --- CONTACTS TAB LOGIC ---
         function renderPeopleList(arr) {
             const list = document.getElementById('peopleList');
             document.getElementById('peopleCount').innerText = arr.length;
