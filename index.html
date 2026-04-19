@@ -3,16 +3,29 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>V-Cash Pro | Premium Fintech</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>V-Cash Pro | البنك الرقمي الذكي في جيبك</title>
+    <meta name="description" content="أداة ذكية لتحليل رسائل فودافون كاش وتحويلها إلى لوحة تحكم بنكية لمعرفة نفقاتك، إيراداتك، وصافي حساباتك مع الأشخاص مجاناً وبأمان تام.">
+    <meta name="keywords" content="فودافون كاش, تحليل مالي, تطبيق مصاريف, إدارة أموال, Vodafone Cash, V-Cash">
+    <meta name="author" content="V-Cash Pro">
+    
+    <!-- Open Graph / Social Media Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="V-Cash Pro | البنك الرقمي الذكي في جيبك">
+    <meta property="og:description" content="قم بتحويل فوضى رسائل فودافون كاش النصية إلى لوحة تحكم ذكية بضغطة زر وبدون مشاركة بياناتك.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1200">
+    
+    <!-- Performance & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind Config -->
     <script>
@@ -20,21 +33,32 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        sans:['Cairo', 'sans-serif'], 
-                        numbers: ['Space Grotesk', 'sans-serif'] 
+                        sans: ['Cairo', 'sans-serif'], 
+                        numbers:['Space Grotesk', 'sans-serif'] 
                     },
-                    colors: { 
-                        voda: { 
-                            red: '#E60000', 
-                            light: '#ff3333',
-                            dark: '#0a0a0a', 
-                            card: '#141414', 
-                            border: 'rgba(255,255,255,0.08)' 
-                        } 
+                    colors: {
+                        voda: { red: '#E60000', light: '#ff3333', dark: '#0a0a0a', card: '#141414', border: 'rgba(255,255,255,0.08)' }
                     },
-                    boxShadow: {
-                        'glow': '0 0 20px rgba(230, 0, 0, 0.4)',
-                        'glow-lg': '0 0 40px rgba(230, 0, 0, 0.3)',
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'shine': 'shine 6s infinite',
+                        'pulse-glow': 'pulse-glow 4s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shine: {
+                            '0%': { left: '-100%' },
+                            '20%': { left: '200%' },
+                            '100%': { left: '200%' }
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' }
+                        }
                     }
                 }
             }
@@ -42,758 +66,439 @@
     </script>
 
     <style>
-        body { background-color: #000000; color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 110px); }
-        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+        body { background-color: #000000; color: #ffffff; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* Background Gradients & Meshes */
+        .bg-mesh-1 { position: absolute; top: -10%; right: -10%; width: 60vw; height: 60vw; max-width: 600px; max-height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.15) 0%, transparent 70%); filter: blur(60px); z-index: -1; pointer-events: none; }
+        .bg-mesh-2 { position: absolute; bottom: 10%; left: -10%; width: 50vw; height: 50vw; max-width: 500px; max-height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(230,0,0,0.1) 0%, transparent 70%); filter: blur(50px); z-index: -1; pointer-events: none; }
         
-        /* Hide Scrollbar */
-        ::-webkit-scrollbar { display: none; } 
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .bg-grid {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
 
-        /* Premium Glass Components */
-        .glass { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--tw-colors-voda-border); }
-        .glass-panel { background: linear-gradient(180deg, rgba(30,30,30,0.7) 0%, rgba(15,15,15,0.9) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        /* Glassmorphism */
+        .glass-nav { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-panel { background: linear-gradient(180deg, rgba(30,30,30,0.4) 0%, rgba(15,15,15,0.8) 100%); backdrop-filter: blur(20px); border: 1px solid var(--tw-colors-voda-border); }
 
-        /* Premium Debit Card Design */
+        /* Buttons */
+        .btn-primary { 
+            background: #ffffff; color: #000000; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.2); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.3); }
+
+        /* Premium Digital Card */
         .premium-card {
             background: linear-gradient(135deg, #111 0%, #000 100%);
             position: relative; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(230, 0, 0, 0.35), inset 0 1px 1px rgba(255,255,255,0.2);
-            border: 1px solid rgba(230, 0, 0, 0.3);
+            box-shadow: 0 30px 60px -12px rgba(230, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid rgba(230, 0, 0, 0.4);
             transform-style: preserve-3d;
-            perspective: 1000px;
         }
         .premium-card::before {
             content: ''; position: absolute; inset: 0;
-            background: radial-gradient(circle at top right, rgba(230,0,0,0.4) 0%, transparent 60%);
+            background: radial-gradient(circle at top right, rgba(230,0,0,0.5) 0%, transparent 70%);
             z-index: 1; pointer-events: none;
         }
         .card-shine {
             position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
-            transform: skewX(-20deg); animation: shine 6s infinite; z-index: 2;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg); z-index: 2; pointer-events: none;
         }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
-        /* Progress Bars */
-        .progress-bar-bg { background: #222; border-radius: 99px; height: 6px; width: 100%; overflow: hidden; display: flex; }
-        .progress-bar-fill { height: 100%; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 10px currentColor; }
+        /* Typography */
+        .text-gradient { background: linear-gradient(to right, #ffffff, #a3a3a3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .text-gradient-red { background: linear-gradient(to right, #ff4d4d, #E60000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Animations */
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
-        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.9); }
-        
-        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popIn { to { transform: scale(1); opacity: 1; } }
+        /* Reveal Animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Floating Nav */
-        .floating-dock { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 8px 16px; }
-        .nav-item { color: #555; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-        .nav-item.active { color: #fff; }
-        .nav-item.active i { transform: translateY(-2px); text-shadow: 0 0 15px rgba(255,255,255,0.5); }
-        .nav-indicator { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%) scale(0); width: 4px; height: 4px; border-radius: 50%; background: #E60000; transition: transform 0.3s; box-shadow: 0 0 8px #E60000;}
-        .nav-item.active .nav-indicator { transform: translateX(-50%) scale(1); }
-
-        /* Quick Action Buttons */
-        .action-btn { transition: transform 0.2s, background 0.2s; }
-        .action-btn:active { transform: scale(0.92); }
-
-        /* Modals */
-        .modal-sheet { transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); transform: translateY(100%); }
-        .modal-active .modal-sheet { transform: translateY(0); }
-        .modal-overlay { transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
-        .modal-active.modal-overlay { opacity: 1; pointer-events: auto; }
+        /* Code Block */
+        .sms-code { font-family: 'Space Grotesk', monospace; font-size: 0.85rem; line-height: 1.8; }
+        .sms-code .highlight { color: #E60000; font-weight: bold; }
+        .sms-code .number { color: #10b981; }
     </style>
 </head>
 
-<body class="selection:bg-voda-red/30 relative">
+<body class="antialiased selection:bg-voda-red/30 selection:text-white">
 
-    <div class="fixed top--10 left--20 w-[70vw] h-[70vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.15)_0%,transparent_60%)] blur-[60px] z-[-1]"></div>
-    <div class="fixed bottom--10 right--20 w-[60vw] h-[60vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.1)_0%,transparent_60%)] blur-[50px] z-[-1]"></div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-safe mt-4 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white px-5 py-3.5 rounded-full shadow-glow transition-all duration-400 transform -translate-y-32 opacity-0 z-[100] flex items-center gap-3 font-bold text-sm border border-white/10 w-max max-w-[90%] backdrop-blur-xl">
-        <i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400 text-lg"></i>
-        <span id="toastMsg">رسالة</span>
-    </div>
-
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[60] hidden flex-col items-center justify-center p-6 text-center animate-fade-in">
-        <div class="relative w-28 h-28 mb-8 flex items-center justify-center">
-            <div class="absolute inset-0 border-4 border-voda-red/20 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-voda-red rounded-full border-t-transparent animate-spin"></div>
-            <i class="fa-solid fa-fingerprint text-4xl text-white opacity-80"></i>
-        </div>
-        <h2 class="text-2xl font-black text-white mb-2" id="loadingTitle">تحليل ذكي للبيانات...</h2>
-        <p class="text-gray-400 text-sm max-w-[250px]">يتم معالجة النصوص العشوائية واستخراج الأرقام بدقة...</p>
-    </div>
-
-    <div class="w-full max-w-md mx-auto relative pt-safe pb-safe px-5 min-h-screen flex flex-col">
-        
-        <!-- Header -->
-        <header class="flex justify-between items-center mb-6 pt-4 animate-slide-up shrink-0">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg relative overflow-hidden">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/512px-Vodafone_icon.svg.png" class="w-5 h-5 object-contain drop-shadow invert brightness-0 relative z-10">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center relative overflow-hidden shadow-lg">
+                    <img src="https://www.vodafone.com/~/media/Images/V/vodafone/corp/logo/logo-dark.svg" alt="Logo" class="w-5 h-5 object-contain invert brightness-0 relative z-10">
                     <div class="absolute inset-0 bg-voda-red/20 mix-blend-overlay"></div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-black text-white leading-none tracking-wide">V-Cash <span class="text-transparent bg-clip-text bg-gradient-to-r from-voda-light to-voda-red">PRO</span></h1>
-                    <div class="flex items-center gap-1.5 mt-1">
-                        <div class="w-1.5 h-1.5 rounded-full bg-gray-500" id="statusDot"></div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest" id="statusText">غير متزامن</p>
-                    </div>
-                </div>
+                <span class="text-xl font-black tracking-widest text-white leading-none">V-Cash <span class="text-transparent bg-clip-text bg-gradient-to-r from-voda-light to-voda-red">PRO</span></span>
             </div>
-            <button class="w-10 h-10 rounded-full glass flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition" onclick="document.getElementById('smsFile').click()">
-                <i class="fa-solid fa-rotate text-sm"></i>
-            </button>
-            <input type="file" id="smsFile" accept=".txt" class="hidden" onchange="handleFileUpload(event)">
-        </header>
-
-        <!-- Empty State -->
-        <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-center pb-20 animate-slide-up delay-100">
-            <div class="w-40 h-40 relative mb-8">
-                <div class="absolute inset-0 bg-gradient-to-tr from-voda-red to-[#4a0000] rounded-3xl transform rotate-12 opacity-40 blur-lg"></div>
-                <div class="absolute inset-0 bg-gradient-to-bl from-gray-800 to-black rounded-3xl transform -rotate-6 border border-white/10 shadow-2xl flex items-center justify-center overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-voda-red/20 blur-xl rounded-full"></div>
-                    <i class="fa-brands fa-nfc-symbol text-5xl text-white/30 transform rotate-90"></i>
-                </div>
-                <div class="absolute bottom-2 -right-2 w-12 h-12 bg-voda-red rounded-full flex items-center justify-center shadow-glow border-2 border-black animate-bounce" style="animation-duration: 2s;">
-                    <i class="fa-solid fa-arrow-up-from-bracket text-white text-lg"></i>
-                </div>
+            <div class="hidden lg:flex items-center gap-8 text-sm font-bold text-gray-400">
+                <a href="#how-it-works" class="hover:text-white transition-colors">طريقة العمل</a>
+                <a href="#features" class="hover:text-white transition-colors">المميزات</a>
+                <a href="#security" class="hover:text-white transition-colors">الأمان والخصوصية</a>
             </div>
-            <h2 class="text-3xl font-black text-white mb-3 tracking-tight">إدارة مالية <span class="text-voda-red">أذكى</span></h2>
-            <p class="text-sm text-gray-400 mb-10 max-w-[280px] mx-auto leading-relaxed">اكتشف تفاصيل نفقاتك، رصيدك الختامي، وإحصائيات تحويلاتك من خلال ملف رسائل فودافون كاش.</p>
-            
-            <button onclick="document.getElementById('smsFile').click()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold text-lg flex justify-center items-center gap-3 hover:scale-[1.02] transition-transform shadow-[0_10px_30px_rgba(255,255,255,0.15)]">
-                مزامنة السجلات الآن <i class="fa-solid fa-bolt text-voda-red"></i>
-            </button>
-            <p class="text-[10px] text-gray-500 font-bold mt-5 flex items-center gap-1.5 justify-center"><i class="fa-solid fa-shield-halved text-gray-600"></i> المعالجة والتشفير يتم على جهازك بالكامل</p>
+            <!-- Link to App -->
+            <a href="app" class="btn-primary font-extrabold py-2.5 px-6 rounded-full text-sm flex items-center gap-2">
+            دخول <i class="fa-solid fa-arrow-left"></i>
+            </a>
         </div>
+    </nav>
 
-        <!-- Dashboard Container -->
-        <div id="dashboardContent" class="hidden flex-1 flex flex-col h-full">
-            
-            <!-- TAB 1: HOME -->
-            <div id="view-home" class="animate-fade-in flex-1">
-                <div class="premium-card rounded-[1.5rem] p-6 mb-6 animate-pop shadow-glow-lg aspect-[1.586] flex flex-col justify-between z-10">
-                    <div class="card-shine"></div>
-                    <div class="relative z-10 flex justify-between items-start">
-                        <i class="fa-solid fa-microchip text-4xl text-[#d4af37] drop-shadow-md"></i>
-                        <i class="fa-solid fa-wifi text-2xl text-white/70 transform rotate-90"></i>
-                    </div>
-                    <div class="relative z-10 mt-auto">
-                        <p class="text-white/60 text-[10px] font-bold mb-1 uppercase tracking-[0.2em]">الرصيد المتاح</p>
-                        <h2 class="text-[2.75rem] leading-none font-black font-numbers text-white drop-shadow-md flex items-baseline gap-1" id="finalBalance">
-                            0<span class="text-2xl text-white/70">.00</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>
-                        </h2>
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="font-numbers text-white/80 tracking-widest text-sm font-bold flex gap-3">
-                                <span>****</span> <span>****</span> <span>****</span> <span class="text-white">VPRO</span>
-                            </div>
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/512px-Vodafone_icon.svg.png" class="w-8 h-8 invert opacity-80 object-contain">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center mb-8 px-2 animate-slide-up delay-100">
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setFilter('transfer_out')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-up"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">صادر</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setFilter('transfer_in')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-down"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">وارد</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('contacts')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-users"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">أشخاص</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="document.getElementById('smsFile').click()">
-                        <div class="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center text-lg shadow-[0_0_15px_rgba(255,255,255,0.3)]"><i class="fa-solid fa-plus"></i></div>
-                        <span class="text-[10px] font-bold text-white">تحديث</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-5 mb-6 animate-slide-up delay-200">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold text-white">حركة الأموال (Cash Flow)</h3>
-                        <span class="text-[9px] text-gray-400 bg-black/50 px-2 py-1 rounded-md font-numbers border border-white/5" id="parsedCountBadge">0 TXNs</span>
-                    </div>
-                    <div class="progress-bar-bg mb-3">
-                        <div id="inflowBar" class="progress-bar-fill bg-emerald-500 shadow-[0_0_10px_#10b981]" style="width: 0%;"></div>
-                        <div id="outflowBar" class="progress-bar-fill bg-voda-red shadow-[0_0_10px_#E60000]" style="width: 0%;"></div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] text-gray-500 font-bold mb-0.5 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> الدخل (In)</p>
-                            <p class="text-sm font-bold font-numbers text-white" id="totalIn">0.00</p>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-[10px] text-gray-500 font-bold mb-0.5 flex items-center gap-1 justify-end">الإنفاق (Out) <span class="w-2 h-2 rounded-full bg-voda-red"></span></p>
-                            <p class="text-sm font-bold font-numbers text-white" id="totalOut">0.00</p>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 class="text-lg font-black text-white mb-3 px-1 animate-slide-up delay-300">تحليل النفقات</h3>
-                <div class="grid grid-cols-2 gap-3 animate-slide-up delay-300 mb-8">
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-money-bill-wave text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">سحب كاش (ATM)</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statWithdrawals">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-arrow-right-to-city text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">إيداع رصيد</p>
-                        <p class="font-bold font-numbers text-emerald-400 text-lg" id="statDeposits">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-mobile-screen-button text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">شحن وفواتير</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statTelecom">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-globe text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">مدفوعات أونلاين</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statOnline">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl col-span-2 flex justify-between items-center relative overflow-hidden border-voda-red/20 bg-gradient-to-r from-[#1a0000] to-transparent">
-                        <div class="absolute inset-0 bg-voda-red/5"></div>
-                        <div class="relative z-10 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-voda-red/20 flex items-center justify-center text-voda-red"><i class="fa-solid fa-percent"></i></div>
-                            <div>
-                                <p class="text-[12px] text-white font-bold">رسوم فودافون</p>
-                                <p class="text-[9px] text-voda-red/70 mt-0.5">تحويل، سحب، وكروت (VCN)</p>
-                            </div>
-                        </div>
-                        <p class="font-black font-numbers text-voda-red text-xl relative z-10" id="statFees">0.00</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: TRANSACTIONS -->
-            <div id="view-transactions" class="hidden animate-fade-in flex-1 flex flex-col h-full">
-                <div class="flex justify-between items-end mb-5 px-1 shrink-0">
-                    <div>
-                        <h2 class="text-3xl font-black text-white mb-1">سجل العمليات</h2>
-                        <p class="text-xs text-gray-400 font-semibold">تتبع كل قرش تم إنفاقه أو استلامه</p>
-                    </div>
-                </div>
-                <div class="flex gap-2 overflow-x-auto hide-scrollbar mb-4 shrink-0 pb-2 px-1">
-                    <button onclick="setFilter('all')" id="filter-all" class="filter-chip active bg-white text-black px-4 py-2 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition-colors">الكل</button>
-                    <button onclick="setFilter('transfer_in')" id="filter-transfer_in" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">وارد</button>
-                    <button onclick="setFilter('transfer_out')" id="filter-transfer_out" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">صادر</button>
-                    <button onclick="setFilter('withdrawal')" id="filter-withdrawal" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">سحب كاش</button>
-                    <button onclick="setFilter('deposit')" id="filter-deposit" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">إيداع</button>
-                </div>
-                <div id="allTxList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
-            </div>
-
-            <!-- TAB 3: CONTACTS -->
-            <div id="view-contacts" class="hidden animate-fade-in flex-1 flex flex-col">
-                <div class="flex justify-between items-end mb-5 px-1 shrink-0">
-                    <div>
-                        <h2 class="text-3xl font-black text-white mb-1">الأشخاص</h2>
-                        <p class="text-xs text-gray-400 font-semibold">صافي الحسابات بينك وبين جهات الاتصال</p>
-                    </div>
-                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center font-numbers text-sm text-black font-black shadow-[0_0_15px_rgba(255,255,255,0.2)]" id="peopleCount">0</div>
-                </div>
-                <div class="relative mb-5 shrink-0">
-                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchInput" oninput="filterPeople()" placeholder="ابحث برقم الموبايل أو الاسم..." class="w-full glass-panel py-3.5 pr-12 pl-4 outline-none focus:border-white/30 focus:bg-white/5 rounded-2xl transition-all text-sm text-white placeholder-gray-500 shadow-inner">
-                </div>
-                <div id="peopleList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Nav -->
-    <div id="bottomNavWrapper" class="fixed bottom-0 left-0 right-0 z-40 hidden pb-safe-offset flex justify-center pointer-events-none" style="padding-bottom: max(20px, env(safe-area-inset-bottom));">
-        <nav class="floating-dock w-full max-w-[320px] flex justify-between items-center shadow-[0_10px_40px_rgba(0,0,0,0.8)] pointer-events-auto">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-item active flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-wallet text-[22px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-            <button onclick="switchTab('transactions')" id="nav-transactions" class="nav-item flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-clock-rotate-left text-[20px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-            <button onclick="switchTab('contacts')" id="nav-contacts" class="nav-item flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-user-group text-[18px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-        </nav>
-    </div>
-
-    <!-- Modals -->
-    <div id="personModal" onclick="closeModal('personModal')" class="fixed inset-0 bg-black/80 backdrop-blur-sm modal-overlay flex flex-col justify-end z-[70] hidden">
-        <div onclick="event.stopPropagation()" class="glass-panel w-full max-w-md mx-auto p-6 rounded-t-[2.5rem] modal-sheet h-[85vh] flex flex-col border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 shrink-0"></div>
-            <div class="flex justify-between items-start mb-6 shrink-0">
-                <div class="flex items-center gap-4 w-[80%]">
-                    <div class="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white text-xl shadow-lg"><i class="fa-solid fa-user"></i></div>
-                    <div class="overflow-hidden">
-                        <h3 class="text-xl font-black text-white mb-0.5 truncate" id="modalPersonName">الاسم</h3>
-                        <p class="text-sm font-numbers text-gray-400 font-bold" id="modalPersonPhone">01000000000</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeModal('personModal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="bg-[#0a0a0a] rounded-2xl p-5 mb-6 border border-white/5 shrink-0 flex justify-between items-center relative overflow-hidden shadow-inner">
-                <div class="absolute right-0 top-0 w-1.5 h-full bg-voda-red" id="modalNetBar"></div>
-                <div>
-                    <p class="text-[11px] text-gray-500 mb-1 font-bold tracking-wide" id="modalNetLabel">الصافي</p>
-                    <p class="font-black font-numbers text-2xl text-white drop-shadow-md" id="modalNetValue" dir="ltr">0.00</p>
-                </div>
-                <div class="text-left w-1/2">
-                    <p class="text-[10px] font-bold text-emerald-400 mb-2 flex justify-between gap-3 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg border border-emerald-500/10"><span>الوارد:</span> <span class="font-numbers" id="modalTotalIn">0</span></p>
-                    <p class="text-[10px] font-bold text-white flex justify-between gap-3 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5"><span>الصادر:</span> <span class="font-numbers" id="modalTotalOut">0</span></p>
-                </div>
-            </div>
-            <h4 class="text-xs font-bold text-gray-400 mb-3 shrink-0 px-1 uppercase tracking-wider">سجل العمليات مع الشخص</h4>
-            <div id="modalTxList" class="space-y-2.5 overflow-y-auto hide-scrollbar flex-1 pb-safe"></div>
-        </div>
-    </div>
-
-    <script>
-        let appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions: [] };
-        let peopleArray =[];
-        let currentFilter = 'all';
-
-        const formatMoney = (num) => parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const cleanNumber = (str) => str ? parseFloat(str.replace(/,/g, '')) : 0;
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+        <div class="absolute inset-0 bg-grid -z-20"></div>
+        <div class="bg-mesh-1"></div>
+        <div class="bg-mesh-2"></div>
         
-        function showToast(msg, type = 'success') {
-            const t = document.getElementById('toast'), i = document.getElementById('toastIcon');
-            document.getElementById('toastMsg').innerText = msg;
-            i.className = type === 'success' ? 'fa-solid fa-check-circle text-emerald-400 text-lg' : 'fa-solid fa-exclamation-circle text-voda-red text-lg';
-            t.classList.remove('-translate-y-32', 'opacity-0');
-            setTimeout(() => t.classList.add('-translate-y-32', 'opacity-0'), 3500);
-        }
-
-        function animateValue(obj, start, end, duration, format = false) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const current = start + easeOut * (end - start);
-                if (format) {
-                    let split = formatMoney(current).split('.');
-                    obj.innerHTML = `${split[0]}<span class="text-2xl text-white/70">.${split[1]}</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>`;
-                } else { obj.innerText = formatMoney(current); }
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        function switchTab(tab) {
-            ['home', 'transactions', 'contacts'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('active');
-            });
-            const view = document.getElementById(`view-${tab}`);
-            view.classList.remove('hidden');
-            view.classList.remove('animate-fade-in');
-            void view.offsetWidth; 
-            view.classList.add('animate-fade-in');
-            document.getElementById(`nav-${tab}`).classList.add('active');
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        function setStatus(text, colorClass) {
-            document.getElementById('statusText').innerText = text;
-            document.getElementById('statusDot').className = `w-1.5 h-1.5 rounded-full ${colorClass} shadow-[0_0_8px_currentColor] animate-pulse`;
-        }
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            setTimeout(() => { document.getElementById(id).classList.add('modal-active'); document.body.style.overflow = 'hidden'; }, 10);
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('modal-active');
-            setTimeout(() => { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = ''; }, 400);
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            document.getElementById('loadingScreen').classList.remove('hidden');
-            document.getElementById('loadingScreen').classList.add('flex');
-            setStatus('جاري المعالجة...', 'bg-yellow-400 text-yellow-400');
-
-            const reader = new FileReader();
-            reader.onload = function(e) { 
-                setTimeout(() => {
-                    parseVodafoneData(e.target.result);
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                    document.getElementById('loadingScreen').classList.remove('flex');
-                }, 800);
-            };
-            reader.readAsText(file);
-            event.target.value = ''; 
-        }
-
-        // --- BULLETPROOF HEURISTIC PARSER ---
-        function parseVodafoneData(text) {
-            if(!text || text.trim() === "") { showToast('الملف فارغ', 'error'); return; }
-
-            appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions:[] };
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
             
-            // Clean invisible Arabic text modifiers that break regex
-            const cleanText = text.replace(/[\u200E\u200F\u202A-\u202E\u200B-\u200D\uFEFF]/g, '');
+            <div class="text-center lg:text-right reveal active">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-voda-red/10 border border-voda-red/20 text-xs font-bold text-voda-light mb-8">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-voda-red opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-voda-red"></span>
+                    </span>
+                    تحليل مالي 100% Offline
+                </div>
+                <h1 class="text-5xl lg:text-[5.5rem] font-black leading-[1.1] mb-6 text-white tracking-tight">
+                    محفظتك، <br>
+                    <span class="text-gradient-red">بمفهوم بنكي.</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    قم بتحويل فوضى رسائل فودافون كاش النصية إلى لوحة تحكم ذكية. تتبع مصروفاتك، إيراداتك، وصافي حساباتك مع الأشخاص بضغطة زر وبدون مشاركة بياناتك مع أي سيرفر.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                    <!-- Link to App -->
+                    <a href="app" class="btn-primary text-center font-extrabold py-4 px-10 rounded-2xl text-lg flex justify-center items-center gap-3 w-full sm:w-auto">
+                        ابدأ المزامنة مجاناً <i class="fa-solid fa-bolt text-voda-red"></i>
+                    </a>
+                </div>
+            </div>
 
-            // Split aggressively by lines of equal signs, hyphens, OR double newlines (Blank Lines)
-            const blocks = cleanText.split(/={10,}|-{10,}|\n\s*\n|\r\n\s*\r\n/);
-            
-            let globalFallbackDate = new Date(); // Fallback if no date is found
+            <!-- Hero 3D Card Showcase -->
+            <div class="relative flex justify-center items-center h-[400px] lg:h-[550px] reveal active" style="perspective: 1200px;">
+                <div id="card-tilt" class="w-full max-w-[400px] absolute z-20 cursor-pointer" style="transform-style: preserve-3d; transition: transform 0.1s ease;">
+                    <div class="premium-card w-full aspect-[1.586] rounded-[2rem] p-8 flex flex-col justify-between" style="transform: translateZ(50px);">
+                        <div class="card-shine animate-shine"></div>
+                        
+                        <div class="flex justify-between items-start z-10">
+                            <i class="fa-solid fa-microchip text-4xl lg:text-5xl text-[#d4af37] drop-shadow-md"></i>
+                            <i class="fa-solid fa-wifi text-2xl lg:text-3xl text-white/50 transform rotate-90"></i>
+                        </div>
 
-            blocks.forEach(block => {
-                let msg = block.trim();
-                if(msg.length < 10) return;
-
-                // Skip pure OTP/Error messages unless they contain a transaction keyword
-                if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام|سحب)/.test(msg)) {
-                    return; 
-                }
-
-                let dateStr = "غير محدد";
-                let dateObj = new Date(globalFallbackDate.getTime()); 
-
-                // Look for standard exported format header
-                const headerMatch = msg.match(/on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
-                
-                // Look for inline date formats (15:54 26-04-10 or 18-04-26 11:50)
-                const internalDateMatch = msg.match(/تاريخ العملية[:\s]*(\d{2}:\d{2})?\s*(\d{2}-\d{2}-\d{2})?\s*(\d{2}:\d{2})?/i);
-
-                if (headerMatch) {
-                    dateStr = headerMatch[1];
-                    dateObj = new Date(dateStr.replace(/-/g, '/'));
-                } else if (internalDateMatch) {
-                    let time = internalDateMatch[1] || internalDateMatch[3] || "00:00";
-                    let datePart = internalDateMatch[2];
-                    if(datePart) {
-                        let parts = datePart.split('-');
-                        let year = parts[0].length === 2 ? "20" + parts[0] : parts[0];
-                        dateStr = `${year}-${parts[1]}-${parts[2]} ${time}`;
-                        let tempDate = new Date(dateStr.replace(/-/g, '/'));
-                        if (!isNaN(tempDate)) dateObj = tempDate;
-                    }
-                }
-                
-                // Update fallback date so next message without a date uses this one
-                if (!isNaN(dateObj)) globalFallbackDate = dateObj;
-
-                // --- Balance Extraction ---
-                const balanceMatch = msg.match(/(?:رصيدك الحالي|رصيد حسابك[^\d]*|رصيد محفظتك الحالي|Vodafone Cash balance is|Available Balance:)[:\s]*(?:EGP\s*)?([\d\.,]+)/i);
-                if (balanceMatch) {
-                    // Update final balance based on the absolute latest transaction processed
-                    appData.finalBalance = cleanNumber(balanceMatch[1]);
-                }
-
-                let isProcessed = false;
-
-                // --- 1. P2P IN ---
-                const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?من رقم\s*(\d+)/i);
-                const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|\d+)/i);
-                
-                if (!isProcessed && (p2pInAr || p2pInEn)) {
-                    let amt = cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1]);
-                    let rawPhone = p2pInAr ? p2pInAr[2] : p2pInEn[2];
-                    let phone = rawPhone.replace(/^002/, ''); 
-                    
-                    const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+?)(?:؛|رصيدك|على رقم|$)/i);
-                    let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي";
-
-                    addPersonTx(phone, name, 'in', amt, dateObj, dateStr, "استلام تحويل");
-                    appData.totalInflow += amt; 
-                    pushGlobalTx('transfer_in', 'in', amt, dateObj, dateStr, `استلام من ${name}`, phone);
-                    isProcessed = true;
-                }
-
-                // --- 2. P2P OUT ---
-                const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?لرقم\s*(\d+)[\s\S]*?مصاريف الخدمة\s*([\d\.,]+)/i);
-                const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+)[\s\S]*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
-
-                if (!isProcessed && (p2pOutAr || p2pOutEn)) {
-                    let amt = cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1]);
-                    let phone = p2pOutAr ? p2pOutAr[2] : p2pOutEn[2];
-                    let fee = cleanNumber(p2pOutAr ? p2pOutAr[3] : p2pOutEn[3]);
-
-                    addPersonTx(phone, null, 'out', amt, dateObj, dateStr, "إرسال تحويل");
-                    appData.totalOutflow += amt; 
-                    appData.feesPaid += fee;
-                    pushGlobalTx('transfer_out', 'out', amt, dateObj, dateStr, `تحويل إلى حساب`, phone);
-                    isProcessed = true;
-                }
-
-                // --- 3. ONLINE / FAWRY PAYMENTS ---
-                const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)([^.]+)/i);
-                const vcnIssue = msg.match(/اصدار كارت الدفع[\s\S]*?خصم\s*([\d\.,]+)/i);
-                
-                if (!isProcessed && onlinePay) {
-                    let amt = cleanNumber(onlinePay[1]);
-                    let merchant = onlinePay[2].trim();
-                    appData.totalOutflow += amt; 
-                    appData.online += amt; 
-                    pushGlobalTx('online', 'out', amt, dateObj, dateStr, `مدفوعات أونلاين/فوري`, merchant);
-                    isProcessed = true;
-                }
-                if (vcnIssue) { appData.feesPaid += cleanNumber(vcnIssue[1]); }
-
-                // --- 4. TELECOM - RECHARGE SELF ---
-                const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة)[\s\S]*?خصم\s*([\d\.,]+)/i);
-                const selfRechEn = msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
-                
-                if (!isProcessed && (selfRechAr || selfRechEn)) {
-                    let amt = cleanNumber(selfRechAr ? selfRechAr[1] : selfRechEn[1]);
-                    appData.totalOutflow += amt; 
-                    appData.telecom += amt; 
-                    pushGlobalTx('telecom', 'out', amt, dateObj, dateStr, `شحن/تجديد خطك`, 'فودافون');
-                    isProcessed = true;
-                }
-
-                // --- 5. TELECOM - RECHARGE OTHERS ---
-                const rechOut = msg.match(/شحن رصيد ب[\s\S]*?إلى رقم\s*(\d+)[\s\S]*?وخصم\s*([\d\.,]+)/i);
-                if (!isProcessed && rechOut) {
-                    let phone = rechOut[1];
-                    let deductedAmt = cleanNumber(rechOut[2]);
-                    
-                    addPersonTx(phone, null, 'out', deductedAmt, dateObj, dateStr, "شحن رصيد للغير");
-                    appData.totalOutflow += deductedAmt; 
-                    appData.telecom += deductedAmt; 
-                    pushGlobalTx('telecom', 'out', deductedAmt, dateObj, dateStr, `شحن لرقم آخر`, phone);
-                    isProcessed = true;
-                }
-
-                // --- 6. TELECOM - RECEIVED FROM OTHERS ---
-                const rechIn = msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
-                if (!isProcessed && rechIn) {
-                    let phone = rechIn[1];
-                    let amt = cleanNumber(rechIn[2]);
-
-                    addPersonTx(phone, null, 'in', amt, dateObj, dateStr, "استلام شحن رصيد");
-                    appData.totalInflow += amt; 
-                    pushGlobalTx('telecom', 'in', amt, dateObj, dateStr, `شحن وارد من`, phone);
-                    isProcessed = true;
-                }
-
-                // --- 7. WITHDRAWALS (ATM/BRANCH) ---
-                const withdrawal = msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
-                if (!isProcessed && withdrawal) {
-                    let amt = cleanNumber(withdrawal[1]);
-                    appData.totalOutflow += amt; 
-                    appData.withdrawals += amt; 
-                    pushGlobalTx('withdrawal', 'out', amt, dateObj, dateStr, 'سحب نقدي (ATM/فرع)', 'خصم من المحفظة');
-                    isProcessed = true;
-                }
-
-                // --- 8. DEPOSITS & CASHBACKS ---
-                const deposit = msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
-                if (!isProcessed && deposit) {
-                    let amt = cleanNumber(deposit[1]);
-                    appData.totalInflow += amt; 
-                    appData.deposits += amt; 
-                    pushGlobalTx('deposit', 'in', amt, dateObj, dateStr, amt <= 10 ? `مكافأة / كاش باك` : `إيداع نقدي`, 'إضافة للرصيد');
-                    isProcessed = true;
-                }
-
-                if (isProcessed) appData.parsedCount++;
-            });
-
-            if (appData.parsedCount === 0) {
-                showToast('لم يتم العثور على أي عمليات قابلة للتحليل.', 'error'); 
-                setStatus('فشل المزامنة', 'bg-voda-red text-voda-red'); 
-                return;
-            }
-
-            peopleArray = Object.values(appData.people).sort((a, b) => (b.totalIn + b.totalOut) - (a.totalIn + a.totalOut));
-            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj);
-            
-            buildUI();
-        }
-
-        function addPersonTx(phone, name, type, amt, dateObj, dateStr, desc) {
-            if (!appData.people[phone]) { 
-                appData.people[phone] = { phone: phone, name: name || "جهة اتصال مسجلة", totalIn: 0, totalOut: 0, transactions:[] }; 
-            } else if (name && appData.people[phone].name === "جهة اتصال مسجلة") { 
-                appData.people[phone].name = name; 
-            }
-            
-            appData.people[phone].transactions.push({ type, amount: amt, dateObj, dateStr, desc });
-            if (type === 'in') appData.people[phone].totalIn += amt;
-            if (type === 'out') appData.people[phone].totalOut += amt;
-        }
-
-        function pushGlobalTx(category, type, amount, dateObj, dateStr, title, subtitle) {
-            appData.allTransactions.push({ category, type, amount, dateObj, dateStr, title, subtitle });
-        }
-
-        function buildUI() {
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('dashboardContent').classList.remove('hidden');
-            document.getElementById('bottomNavWrapper').classList.remove('hidden');
-            
-            setStatus('متزامن محلياً', 'bg-emerald-500 text-emerald-400');
-            showToast('تمت المزامنة وتحليل البيانات بنجاح!');
-
-            animateValue(document.getElementById('finalBalance'), 0, appData.finalBalance, 1200, true);
-            animateValue(document.getElementById('totalIn'), 0, appData.totalInflow, 1000);
-            animateValue(document.getElementById('totalOut'), 0, appData.totalOutflow, 1000);
-            animateValue(document.getElementById('statWithdrawals'), 0, appData.withdrawals, 800);
-            animateValue(document.getElementById('statDeposits'), 0, appData.deposits, 800);
-            animateValue(document.getElementById('statTelecom'), 0, appData.telecom, 800);
-            animateValue(document.getElementById('statOnline'), 0, appData.online, 800);
-            animateValue(document.getElementById('statFees'), 0, Math.max(0, appData.feesPaid), 800);
-            
-            document.getElementById('parsedCountBadge').innerText = `${appData.parsedCount} عمليات`;
-
-            let totalFlow = appData.totalInflow + appData.totalOutflow;
-            let inPct = totalFlow === 0 ? 50 : (appData.totalInflow / totalFlow) * 100;
-            let outPct = totalFlow === 0 ? 50 : (appData.totalOutflow / totalFlow) * 100;
-            setTimeout(() => {
-                document.getElementById('inflowBar').style.width = `${inPct}%`;
-                document.getElementById('outflowBar').style.width = `${outPct}%`;
-            }, 300);
-
-            renderPeopleList(peopleArray);
-            renderAllTransactions();
-        }
-
-        function setFilter(cat) {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-chip').forEach(btn => {
-                btn.classList.remove('active', 'bg-white', 'text-black', 'border-transparent');
-                btn.classList.add('glass', 'text-gray-300', 'border-white/10');
-            });
-            const activeBtn = document.getElementById(`filter-${cat}`);
-            if(activeBtn) {
-                activeBtn.classList.remove('glass', 'text-gray-300', 'border-white/10');
-                activeBtn.classList.add('active', 'bg-white', 'text-black', 'border-transparent');
-            }
-            renderAllTransactions();
-        }
-
-        function renderAllTransactions() {
-            const list = document.getElementById('allTxList');
-            const filtered = appData.allTransactions.filter(tx => currentFilter === 'all' || tx.category === currentFilter);
-
-            if (filtered.length === 0) {
-                list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-receipt text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد عمليات مسجلة هنا.</p></div>`;
-                return;
-            }
-
-            list.innerHTML = filtered.map((tx, idx) => {
-                const isInc = tx.type === 'in';
-                const col = isInc ? 'text-emerald-400' : 'text-white';
-                const sign = isInc ? '+' : '-';
-                
-                let icon = '', bgIcon = '';
-                switch(tx.category) {
-                    case 'transfer_in': icon = 'fa-arrow-down'; bgIcon = 'bg-emerald-500/10 text-emerald-400'; break;
-                    case 'transfer_out': icon = 'fa-arrow-up'; bgIcon = 'bg-white/10 text-white'; break;
-                    case 'withdrawal': icon = 'fa-money-bill-wave'; bgIcon = 'bg-gray-800 text-gray-300'; break;
-                    case 'deposit': icon = 'fa-arrow-right-to-city'; bgIcon = 'bg-emerald-500/10 text-emerald-400'; break;
-                    case 'telecom': icon = 'fa-mobile-screen'; bgIcon = 'bg-blue-500/10 text-blue-400'; break;
-                    case 'online': icon = 'fa-globe'; bgIcon = 'bg-purple-500/10 text-purple-400'; break;
-                    default: icon = 'fa-receipt'; bgIcon = 'bg-gray-800 text-gray-300';
-                }
-
-                const d = tx.dateStr.split(' ');
-                const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
-                const delay = Math.min(idx * 20, 400);
-
-                return `
-                <div class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 hover:bg-white/5 transition-colors animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
-                    <div class="flex items-center gap-3.5 w-[70%]">
-                        <div class="w-11 h-11 rounded-full ${bgIcon} flex items-center justify-center shrink-0 border border-white/5"><i class="fa-solid ${icon} text-[15px]"></i></div>
-                        <div class="truncate">
-                            <p class="font-extrabold text-[13px] text-white truncate tracking-wide">${tx.title}</p>
-                            <p class="text-[11px] text-gray-400 mt-0.5 truncate font-numbers">${tx.subtitle} <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${displayDate}</p>
+                        <div class="z-10 mt-auto">
+                            <p class="text-white/60 text-[10px] lg:text-[11px] font-bold mb-1 uppercase tracking-[0.2em]">الرصيد المتاح</p>
+                            <h3 class="text-[3rem] lg:text-[3.5rem] leading-none font-numbers font-black text-white drop-shadow-lg flex items-baseline gap-1">
+                                <span class="counter" data-target="24500">0</span><span class="text-xl lg:text-2xl text-white/70">.00</span> 
+                                <span class="text-xs lg:text-sm font-sans font-bold text-voda-red ml-2">EGP</span>
+                            </h3>
+                            
+                            <div class="flex justify-between items-end mt-4 lg:mt-6">
+                                <div class="font-numbers text-white/80 tracking-[0.2em] lg:tracking-[0.3em] text-sm lg:text-base font-bold flex gap-4">
+                                    <span>****</span> <span>****</span> <span>VPRO</span>
+                                </div>
+                                <img src="https://www.vodafone.com/~/media/Images/V/vodafone/corp/logo/logo-dark.svg" alt="Voda" class="w-8 h-8 lg:w-10 lg:h-10 invert opacity-80 object-contain">
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col items-end shrink-0">
-                        <p class="font-bold font-numbers ${col} text-[15px]" dir="ltr">${sign}${formatMoney(tx.amount)}</p>
+                </div>
+
+                <!-- Floating Elements -->
+                <div class="absolute -right-4 top-4 lg:top-10 glass-panel border-emerald-500/20 p-3 lg:p-4 rounded-2xl shadow-2xl animate-float z-30 hidden md:flex items-center gap-3 w-40 lg:w-48">
+                    <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-arrow-down text-sm"></i></div>
+                    <div>
+                        <p class="text-[9px] lg:text-[10px] text-gray-400 font-bold mb-0.5">وارد من أحمد</p>
+                        <p class="font-bold font-numbers text-white text-sm lg:text-base">+1,200.00</p>
                     </div>
-                </div>`;
-            }).join('');
-        }
-
-        function renderPeopleList(arr) {
-            const list = document.getElementById('peopleList');
-            document.getElementById('peopleCount').innerText = arr.length;
-
-            if (arr.length === 0) { list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-address-book text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد جهات اتصال مسجلة.</p></div>`; return; }
-
-            list.innerHTML = arr.map((p, idx) => {
-                let net = p.totalIn - p.totalOut;
-                let isPos = net >= 0;
-                let color = isPos ? 'text-emerald-400' : 'text-white';
-                let sign = isPos ? '+' : '';
-                const delay = Math.min(idx * 20, 400);
-
-                return `
-                <div onclick="openPerson('${p.phone}')" class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 cursor-pointer hover:bg-white/5 transition-all active:scale-[0.98] animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
-                    <div class="flex items-center gap-4 w-[65%]">
-                        <div class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/5 flex items-center justify-center text-gray-400 shadow-inner"><i class="fa-solid fa-user"></i></div>
-                        <div class="truncate"><p class="font-extrabold text-[14px] truncate text-white tracking-wide">${p.name}</p><p class="text-[11px] font-numbers text-gray-500 mt-1 tracking-widest">${p.phone}</p></div>
-                    </div>
-                    <div class="flex flex-col items-end shrink-0">
-                        <p class="text-[9px] text-gray-500 font-bold mb-1 uppercase tracking-wider">الصافي</p>
-                        <p class="font-bold font-numbers ${color} text-[15px]" dir="ltr">${sign}${formatMoney(net)}</p>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function filterPeople() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderPeopleList(peopleArray.filter(p => p.name.toLowerCase().includes(q) || p.phone.includes(q)));
-        }
-
-        function openPerson(phone) {
-            const p = appData.people[phone];
-            if (!p) return;
-
-            document.getElementById('modalPersonName').innerText = p.name;
-            document.getElementById('modalPersonPhone').innerText = p.phone;
-            
-            let net = p.totalIn - p.totalOut;
-            let isPos = net >= 0;
-            
-            const netValEl = document.getElementById('modalNetValue');
-            netValEl.innerText = (isPos ? '+' : '') + formatMoney(net);
-            netValEl.className = `font-black font-numbers text-3xl drop-shadow-md ${isPos ? 'text-emerald-400' : 'text-white'}`;
-            
-            document.getElementById('modalNetBar').className = `absolute right-0 top-0 w-1.5 h-full ${isPos ? 'bg-emerald-500 shadow-[0_0_15px_#10b981]' : 'bg-voda-red shadow-[0_0_15px_#E60000]'}`;
-            document.getElementById('modalNetLabel').innerText = isPos ? 'المتبقي لك' : 'المتبقي عليك';
-            document.getElementById('modalTotalIn').innerText = formatMoney(p.totalIn);
-            document.getElementById('modalTotalOut').innerText = formatMoney(p.totalOut);
-
-            const sorted =[...p.transactions].sort((a, b) => b.dateObj - a.dateObj);
-            document.getElementById('modalTxList').innerHTML = sorted.map(tx => {
-                const isInc = tx.type === 'in';
-                const col = isInc ? 'text-emerald-400' : 'text-white';
-                const bgIcon = isInc ? 'bg-emerald-500/10 text-emerald-400' : 'bg-white/10 text-white';
+                </div>
                 
-                const d = tx.dateStr.split(' ');
-                const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
-
-                return `
-                <div class="bg-[#141414] p-3.5 rounded-xl flex justify-between items-center border border-white/5">
-                    <div class="flex items-center gap-3.5 w-[75%]">
-                        <div class="w-9 h-9 rounded-full ${bgIcon} flex items-center justify-center shrink-0 border border-white/5"><i class="fa-solid ${isInc ? 'fa-arrow-down' : 'fa-arrow-up'} text-[11px]"></i></div>
-                        <div class="truncate"><p class="font-extrabold text-[12px] text-white truncate">${tx.desc}</p><p class="text-[10px] font-numbers text-gray-500 mt-1">${displayDate}</p></div>
+                <div class="absolute -left-4 lg:-left-8 bottom-12 lg:bottom-20 glass-panel border-voda-red/20 p-3 lg:p-4 rounded-2xl shadow-2xl animate-float-delayed z-30 flex items-center gap-3 w-40 lg:w-48">
+                    <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-voda-red/10 flex items-center justify-center text-voda-red"><i class="fa-solid fa-arrow-up text-sm"></i></div>
+                    <div>
+                        <p class="text-[9px] lg:text-[10px] text-gray-400 font-bold mb-0.5">رسوم تحويل</p>
+                        <p class="font-bold font-numbers text-white text-sm lg:text-base">-15.00</p>
                     </div>
-                    <p class="font-bold font-numbers ${col} text-[14px] shrink-0" dir="ltr">${isInc ? '+' : '-'}${formatMoney(tx.amount)}</p>
-                </div>`;
-            }).join('');
-            openModal('personModal');
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before / After (The Magic) -->
+    <section class="py-24 bg-[#050505] relative border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl lg:text-4xl font-black mb-4">من نصوص معقدة، <span class="text-voda-red">إلى واجهة ذكية.</span></h2>
+                <p class="text-gray-400 text-lg">وداعاً للبحث اليدوي في الرسائل، دع الذكاء الاصطناعي يقوم بالعمل.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <!-- Code / SMS Side -->
+                <div class="glass-panel p-6 lg:p-8 rounded-[2rem] reveal relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#050505] opacity-80 z-10 pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10 relative z-20">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-comment-sms text-gray-400 text-xl"></i>
+                            <h3 class="font-bold text-gray-300">سجل الرسائل النصية</h3>
+                        </div>
+                        <span class="text-[10px] bg-white/10 px-2 py-1 rounded text-gray-400 font-numbers">.TXT</span>
+                    </div>
+                    <div class="sms-code space-y-4 text-left relative z-20 opacity-70 group-hover:opacity-100 transition-opacity" dir="ltr">
+                        <p>Received from VF-Cash on 2023-10-15 14:30<br>
+                        تم تحويل <span class="number">500</span> جنيه لرقم <span class="number">01012345678</span> مصاريف الخدمة <span class="highlight">1</span> جنيه رصيدك الحالي <span class="number">1200</span></p>
+                        <hr class="border-white/5 my-2">
+                        <p>رقم <span class="number">01012345678</span> شحنلك ب <span class="number">200</span> ج رصيدك <span class="number">1400</span></p>
+                        <hr class="border-white/5 my-2">
+                        <p>تم سحب <span class="highlight">1000</span> جنيه من الصراف الالي...</p>
+                    </div>
+                </div>
+
+                <!-- UI Render Side -->
+                <div class="relative reveal delay-200">
+                    <div class="absolute top-1/2 -right-6 lg:-right-12 -translate-y-1/2 w-12 h-12 bg-voda-red rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(230,0,0,0.6)] z-30 border-4 border-[#050505] hidden lg:flex">
+                        <i class="fa-solid fa-arrow-left-long text-white"></i>
+                    </div>
+                    
+                    <div class="bg-[#0a0a0a] p-6 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                            <h3 class="font-black text-white text-xl">لوحة التحكم</h3>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center"><i class="fa-solid fa-chart-pie text-voda-red"></i></div>
+                        </div>
+                        
+                        <div class="glass-panel p-4 rounded-2xl flex justify-between items-center mb-4 border-voda-red/30 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-1 h-full bg-voda-red"></div>
+                            <div class="flex items-center gap-4 w-[65%]">
+                                <div class="w-12 h-12 rounded-full bg-gray-900 border border-white/5 flex items-center justify-center text-gray-400"><i class="fa-solid fa-user"></i></div>
+                                <div><p class="font-bold text-[14px] text-white">01012345678</p><p class="text-[10px] text-gray-500 mt-1">جهات الاتصال</p></div>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[9px] text-gray-500 font-bold mb-1 uppercase">الصافي عليك</p>
+                                <p class="font-bold font-numbers text-white text-lg" dir="ltr">-300.00</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="glass-panel p-3.5 rounded-xl">
+                                <div class="w-6 h-6 rounded-full bg-white/5 text-gray-400 flex items-center justify-center mb-2"><i class="fa-solid fa-money-bill-wave text-[10px]"></i></div>
+                                <p class="text-[10px] text-gray-400 mb-1">سحب كاش</p>
+                                <p class="font-numbers font-bold text-white">1,000.00</p>
+                            </div>
+                            <div class="glass-panel p-3.5 rounded-xl border-voda-red/20 bg-voda-red/5">
+                                <div class="w-6 h-6 rounded-full bg-voda-red/20 text-voda-red flex items-center justify-center mb-2"><i class="fa-solid fa-percent text-[10px]"></i></div>
+                                <p class="text-[10px] text-voda-red/80 mb-1">رسوم الخدمة</p>
+                                <p class="font-numbers font-bold text-voda-red">1.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-black mb-4">آلية العمل في 3 خطوات</h2>
+                <p class="text-gray-400 max-w-xl mx-auto">لضمان الخصوصية التامة، نقوم بقراءة البيانات من ملف نصي تستخرجه أنت بنفسك.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="glass-panel p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-full bg-[#111] border border-white/10 mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 text-white shadow-inner">1</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">حمل أداة الاستخراج</h3>
+                    <p class="text-gray-400 text-sm mb-6">استخدم تطبيق "SMS Exporter" المجاني والآمن من المتجر لجمع رسائلك.</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.smartpositive.sms_exporter" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 px-6 rounded-full text-sm transition-colors w-full border border-white/5">
+                        <i class="fa-brands fa-google-play"></i> Google Play
+                    </a>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-panel p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300 delay-100">
+                    <div class="w-16 h-16 rounded-full bg-[#111] border border-white/10 mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 text-white shadow-inner">2</div>
+                    <h3 class="text-lg font-bold mb-3 text-white">تصدير السجل</h3>
+                    <p class="text-gray-400 text-sm mb-6">اختر جهة اتصال Vodafone وقم بحفظ الرسائل كملف <span class="text-voda-red font-bold font-numbers">.TXT</span></p>
+                    <div class="bg-black/50 border border-white/5 rounded-xl py-3 px-4 flex items-center justify-center gap-3 text-gray-500 w-full">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span class="text-xs font-numbers font-bold">Export_SMS.txt</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="premium-card p-8 rounded-[2rem] reveal text-center hover:-translate-y-2 transition-transform duration-300 delay-200 border-none">
+                    <div class="w-16 h-16 rounded-full bg-white text-black mx-auto flex items-center justify-center text-xl font-numbers font-bold mb-6 shadow-glow relative z-10">3</div>
+                    <h3 class="text-lg font-bold mb-3 text-white relative z-10">المزامنة الذكية</h3>
+                    <p class="text-gray-300 text-sm mb-6 relative z-10">ارفع الملف هنا، وسيتولى محركنا التحليلي بناء لوحتك المالية فوراً.</p>
+                    <a href="app.html" class="inline-flex items-center justify-center gap-2 bg-white text-black font-extrabold py-2.5 px-6 rounded-full text-sm transition-transform hover:scale-105 w-full relative z-10">
+                        ابدأ الآن <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Bento Grid -->
+    <section id="features" class="py-24 bg-[#000000] border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16 reveal">
+                <h2 class="text-3xl font-black mb-4">مصمم ليعطيك <span class="text-gradient-red">السيطرة الكاملة</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Contacts -->
+                <div class="md:col-span-2 glass-panel rounded-[2rem] p-8 reveal relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                    <div class="relative z-10 mb-8">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white mb-4"><i class="fa-solid fa-users text-xl"></i></div>
+                        <h3 class="text-2xl font-black text-white mb-2">إدارة الديون وجهات الاتصال</h3>
+                        <p class="text-gray-400 text-sm max-w-md leading-relaxed">يتتبع النظام كل رقم تعاملت معه، يجمع المدفوعات، ويحسب لك "الصافي" لتعرف من لك ومن عليك فوراً.</p>
+                    </div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 w-full max-w-sm relative z-10 shadow-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div><p class="text-sm font-bold text-white">صافي الحساب</p><p class="text-[10px] text-gray-500">رقم الهاتف: 010****</p></div>
+                        </div>
+                        <p class="font-numbers font-bold text-emerald-400">+4,500</p>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div class="glass-panel rounded-[2rem] p-8 reveal delay-100 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-colors"></div>
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white mb-4 relative z-10"><i class="fa-solid fa-chart-pie text-xl"></i></div>
+                    <h3 class="text-xl font-black text-white mb-2 relative z-10">تصنيف النفقات</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 relative z-10">التمييز بين السحب النقدي، الشحن، المدفوعات الأونلاين.</p>
+                    <div class="flex gap-2 flex-wrap relative z-10">
+                        <span class="text-[10px] px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white">سحب ATM</span>
+                        <span class="text-[10px] px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white">دفع VCN</span>
+                    </div>
+                </div>
+
+                <!-- Hidden Fees -->
+                <div class="glass-panel rounded-[2rem] p-8 reveal relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-voda-red/10 blur-[50px] rounded-full group-hover:bg-voda-red/20 transition-colors"></div>
+                    <div class="w-12 h-12 rounded-full bg-voda-red/10 flex items-center justify-center text-voda-red mb-4 relative z-10"><i class="fa-solid fa-magnifying-glass-dollar text-xl"></i></div>
+                    <h3 class="text-xl font-black text-white mb-2 relative z-10">الرسوم المخفية</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed relative z-10">كم أنفقت على رسوم التحويل واستخراج الكروت هذا العام؟ النظام سيجمعها لك في رقم واحد.</p>
+                </div>
+
+                <!-- UX -->
+                <div class="md:col-span-2 glass-panel rounded-[2rem] p-8 reveal delay-100 flex flex-col sm:flex-row items-center gap-8 border-voda-red/20 bg-gradient-to-l from-voda-red/5 to-transparent">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-black text-white mb-2">تجربة مستخدم استثنائية</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">واجهة مستخدم ناعمة، مصممة خصيصاً لتعمل كأنها تطبيق أصلي (Native App) على هاتفك بفضل تقنية الـ Floating Dock السفلية.</p>
+                        <a href="app.html" class="text-white text-sm font-bold border-b border-voda-red pb-1 hover:text-voda-red transition-colors">جرب الواجهة بنفسك <i class="fa-solid fa-arrow-left text-[10px] mr-1"></i></a>
+                    </div>
+                    <div class="w-full sm:w-1/3 bg-[#000] rounded-3xl p-2 border border-white/10 shadow-2xl shrink-0 aspect-[1/1.5] relative flex justify-center items-end pb-4">
+                        <div class="w-[80%] h-12 rounded-full bg-gray-900 border border-white/10 flex justify-between items-center px-4">
+                            <i class="fa-solid fa-wallet text-white text-sm"></i>
+                            <i class="fa-solid fa-clock-rotate-left text-gray-600 text-sm"></i>
+                            <i class="fa-solid fa-users text-gray-600 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zero-Knowledge Security -->
+    <section id="security" class="py-24 relative overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 bg-mesh-1 opacity-30"></div>
+        <div class="max-w-5xl mx-auto px-6 relative z-10">
+            <div class="glass-panel border-voda-red/30 rounded-[3rem] p-10 lg:p-16 text-center flex flex-col items-center shadow-[0_0_50px_rgba(230,0,0,0.1)] reveal relative overflow-hidden">
+                
+                <div class="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-3xl lg:text-4xl text-white mb-8 relative z-10 shadow-lg">
+                    <div class="absolute inset-0 rounded-full border-2 border-voda-red animate-pulse-glow opacity-50"></div>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                
+                <h2 class="text-3xl lg:text-4xl font-black text-white mb-4 relative z-10">نحن لا نرى بياناتك. <span class="text-voda-red">أبداً.</span></h2>
+                <p class="text-gray-400 text-base lg:text-lg leading-relaxed mb-10 max-w-2xl relative z-10">
+                    التطبيق مبني على معمارية <strong>Zero-Knowledge</strong>. يتم قراءة وتحليل ملف الرسائل بالكامل داخل متصفحك (Client-Side). بمجرد إغلاق الصفحة، تتبخر البيانات فوراً.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full relative z-10">
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-server text-voda-red mb-3 text-2xl"></i><p class="text-sm font-bold text-white">بدون خوادم تتبع</p></div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-wifi text-gray-500 mb-3 text-2xl relative"><div class="absolute inset-0 bg-gray-500 w-full h-[2px] rotate-45 top-1/2"></div></i><p class="text-sm font-bold text-white">معالجة Offline</p></div>
+                    <div class="bg-[#050505] border border-white/5 rounded-2xl p-4 text-center"><i class="fa-solid fa-trash-can text-emerald-500 mb-3 text-2xl"></i><p class="text-sm font-bold text-white">تدمير ذاتي للجلسة</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-24 pb-12 bg-[#000000] border-t border-white/5 text-center relative overflow-hidden">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-voda-red/20 blur-[150px] pointer-events-none"></div>
+        <div class="max-w-2xl mx-auto px-6 reveal relative z-10 mb-16">
+            <h2 class="text-4xl lg:text-5xl font-black text-white mb-6 tracking-tight">استعد السيطرة على حساباتك.</h2>
+            <p class="text-gray-400 mb-10 text-lg">ارفع ملفك الآن، وشاهد السحر في ثانية واحدة.</p>
+            <a href="app" class="btn-primary inline-flex items-center gap-3 font-extrabold py-4 px-12 rounded-full text-lg w-full sm:w-auto justify-center">
+                اكتشف محفظتك <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+        <div class="border-t border-white/5 pt-8 text-xs text-gray-600 font-bold px-6 flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto tracking-wide">
+            <p>&copy; 2026 V-Cash Pro Smart Analyzer. Designed for privacy.</p>
+            <p class="font-sans font-normal">هذه الأداة غير تابعة لشركة ڤودافون بأي شكل من الأشكال.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Scroll Reveal
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 50) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); 
+
+        // Number Counter Animation
+        const counter = document.querySelector('.counter');
+        const target = +counter.getAttribute('data-target');
+        let count = 0;
+        
+        const updateCounter = () => {
+            const increment = target / 80;
+            if(count < target) {
+                count += increment;
+                counter.innerText = Math.ceil(count).toLocaleString('en-US');
+                setTimeout(updateCounter, 20);
+            } else {
+                counter.innerText = target.toLocaleString('en-US');
+            }
+        };
+        setTimeout(updateCounter, 800);
+
+        // 3D Card Hover Effect (Desktop Only)
+        const card = document.getElementById('card-tilt');
+        if(card && window.matchMedia("(min-width: 1024px)").matches) {
+            const container = card.parentElement;
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2; 
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -15; 
+                const rotateY = ((x - centerX) / centerX) * 15;
+                
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            });
         }
     </script>
 </body>
