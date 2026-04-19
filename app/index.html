@@ -200,11 +200,11 @@
                 </div>
 
                 <div class="flex justify-between items-center mb-8 px-2 animate-slide-up delay-100">
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setFilter('transfer_out')">
+                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setMainFilter('out')">
                         <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-up"></i></div>
                         <span class="text-[10px] font-bold text-gray-400">صادر</span>
                     </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setFilter('transfer_in')">
+                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setMainFilter('in')">
                         <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-down"></i></div>
                         <span class="text-[10px] font-bold text-gray-400">وارد</span>
                     </div>
@@ -283,13 +283,22 @@
                         <p class="text-xs text-gray-400 font-semibold">تتبع كل قرش تم إنفاقه أو استلامه</p>
                     </div>
                 </div>
-                <div class="flex gap-2 overflow-x-auto hide-scrollbar mb-4 shrink-0 pb-2 px-1">
-                    <button onclick="setFilter('all')" id="filter-all" class="filter-chip active bg-white text-black px-4 py-2 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition-colors">الكل</button>
-                    <button onclick="setFilter('transfer_in')" id="filter-transfer_in" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">وارد</button>
-                    <button onclick="setFilter('transfer_out')" id="filter-transfer_out" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">صادر</button>
-                    <button onclick="setFilter('withdrawal')" id="filter-withdrawal" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">سحب كاش</button>
-                    <button onclick="setFilter('deposit')" id="filter-deposit" class="filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">إيداع</button>
+
+                <!-- Hierarchical Filters -->
+                <div class="flex flex-col gap-2 mb-4 shrink-0 px-1">
+                    <!-- Main Filters -->
+                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                        <button onclick="setMainFilter('all')" id="main-filter-all" class="main-filter-chip active bg-white text-black px-4 py-2 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition-colors">الكل</button>
+                        <button onclick="setMainFilter('in')" id="main-filter-in" class="main-filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">وارد <i class="fa-solid fa-arrow-down ml-1 text-[10px] text-emerald-400"></i></button>
+                        <button onclick="setMainFilter('out')" id="main-filter-out" class="main-filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">صادر <i class="fa-solid fa-arrow-up ml-1 text-[10px] text-voda-red"></i></button>
+                    </div>
+                    
+                    <!-- Sub Filters Container (Dynamically Populated) -->
+                    <div id="sub-filters-container" class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 hidden transition-all">
+                        <!-- Filled by JS -->
+                    </div>
                 </div>
+
                 <div id="allTxList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
             </div>
 
@@ -362,7 +371,10 @@
     <script>
         let appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions: [] };
         let peopleArray =[];
-        let currentFilter = 'all';
+        
+        // Filter States
+        let currentMainFilter = 'all'; // 'all', 'in', 'out'
+        let currentSubFilter = 'all';
 
         const formatMoney = (num) => parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const cleanNumber = (str) => str ? parseFloat(str.replace(/,/g, '')) : 0;
@@ -439,25 +451,19 @@
             event.target.value = ''; 
         }
 
-        // --- BULLETPROOF HEURISTIC PARSER ---
         function parseVodafoneData(text) {
             if(!text || text.trim() === "") { showToast('الملف فارغ', 'error'); return; }
 
             appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions:[] };
-            
-            // Clean invisible Arabic text modifiers that break regex
             const cleanText = text.replace(/[\u200E\u200F\u202A-\u202E\u200B-\u200D\uFEFF]/g, '');
-
-            // Split aggressively by lines of equal signs, hyphens, OR double newlines (Blank Lines)
             const blocks = cleanText.split(/={10,}|-{10,}|\n\s*\n|\r\n\s*\r\n/);
             
-            let globalFallbackDate = new Date(); // Fallback if no date is found
+            let globalFallbackDate = new Date();
 
             blocks.forEach(block => {
                 let msg = block.trim();
                 if(msg.length < 10) return;
 
-                // Skip pure OTP/Error messages unless they contain a transaction keyword
                 if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام|سحب)/.test(msg)) {
                     return; 
                 }
@@ -465,10 +471,7 @@
                 let dateStr = "غير محدد";
                 let dateObj = new Date(globalFallbackDate.getTime()); 
 
-                // Look for standard exported format header
                 const headerMatch = msg.match(/on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
-                
-                // Look for inline date formats (15:54 26-04-10 or 18-04-26 11:50)
                 const internalDateMatch = msg.match(/تاريخ العملية[:\s]*(\d{2}:\d{2})?\s*(\d{2}-\d{2}-\d{2})?\s*(\d{2}:\d{2})?/i);
 
                 if (headerMatch) {
@@ -485,28 +488,20 @@
                         if (!isNaN(tempDate)) dateObj = tempDate;
                     }
                 }
-                
-                // Update fallback date so next message without a date uses this one
                 if (!isNaN(dateObj)) globalFallbackDate = dateObj;
 
-                // --- Balance Extraction ---
                 const balanceMatch = msg.match(/(?:رصيدك الحالي|رصيد حسابك[^\d]*|رصيد محفظتك الحالي|Vodafone Cash balance is|Available Balance:)[:\s]*(?:EGP\s*)?([\d\.,]+)/i);
-                if (balanceMatch) {
-                    // Update final balance based on the absolute latest transaction processed
-                    appData.finalBalance = cleanNumber(balanceMatch[1]);
-                }
+                if (balanceMatch) { appData.finalBalance = cleanNumber(balanceMatch[1]); }
 
                 let isProcessed = false;
 
-                // --- 1. P2P IN ---
+                // 1. P2P IN
                 const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?من رقم\s*(\d+)/i);
                 const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|\d+)/i);
-                
                 if (!isProcessed && (p2pInAr || p2pInEn)) {
                     let amt = cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1]);
                     let rawPhone = p2pInAr ? p2pInAr[2] : p2pInEn[2];
                     let phone = rawPhone.replace(/^002/, ''); 
-                    
                     const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+?)(?:؛|رصيدك|على رقم|$)/i);
                     let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي";
 
@@ -516,10 +511,9 @@
                     isProcessed = true;
                 }
 
-                // --- 2. P2P OUT ---
+                // 2. P2P OUT
                 const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?لرقم\s*(\d+)[\s\S]*?مصاريف الخدمة\s*([\d\.,]+)/i);
                 const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+)[\s\S]*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
-
                 if (!isProcessed && (p2pOutAr || p2pOutEn)) {
                     let amt = cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1]);
                     let phone = p2pOutAr ? p2pOutAr[2] : p2pOutEn[2];
@@ -532,73 +526,64 @@
                     isProcessed = true;
                 }
 
-                // --- 3. ONLINE / FAWRY PAYMENTS ---
+                // 3. ONLINE / FAWRY PAYMENTS
                 const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)([^.]+)/i);
                 const vcnIssue = msg.match(/اصدار كارت الدفع[\s\S]*?خصم\s*([\d\.,]+)/i);
-                
                 if (!isProcessed && onlinePay) {
                     let amt = cleanNumber(onlinePay[1]);
                     let merchant = onlinePay[2].trim();
-                    appData.totalOutflow += amt; 
-                    appData.online += amt; 
+                    appData.totalOutflow += amt; appData.online += amt; 
                     pushGlobalTx('online', 'out', amt, dateObj, dateStr, `مدفوعات أونلاين/فوري`, merchant);
                     isProcessed = true;
                 }
                 if (vcnIssue) { appData.feesPaid += cleanNumber(vcnIssue[1]); }
 
-                // --- 4. TELECOM - RECHARGE SELF ---
+                // 4. TELECOM - RECHARGE SELF
                 const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة)[\s\S]*?خصم\s*([\d\.,]+)/i);
                 const selfRechEn = msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
-                
                 if (!isProcessed && (selfRechAr || selfRechEn)) {
                     let amt = cleanNumber(selfRechAr ? selfRechAr[1] : selfRechEn[1]);
-                    appData.totalOutflow += amt; 
-                    appData.telecom += amt; 
+                    appData.totalOutflow += amt; appData.telecom += amt; 
                     pushGlobalTx('telecom', 'out', amt, dateObj, dateStr, `شحن/تجديد خطك`, 'فودافون');
                     isProcessed = true;
                 }
 
-                // --- 5. TELECOM - RECHARGE OTHERS ---
+                // 5. TELECOM - RECHARGE OTHERS
                 const rechOut = msg.match(/شحن رصيد ب[\s\S]*?إلى رقم\s*(\d+)[\s\S]*?وخصم\s*([\d\.,]+)/i);
                 if (!isProcessed && rechOut) {
                     let phone = rechOut[1];
                     let deductedAmt = cleanNumber(rechOut[2]);
-                    
                     addPersonTx(phone, null, 'out', deductedAmt, dateObj, dateStr, "شحن رصيد للغير");
-                    appData.totalOutflow += deductedAmt; 
-                    appData.telecom += deductedAmt; 
+                    appData.totalOutflow += deductedAmt; appData.telecom += deductedAmt; 
                     pushGlobalTx('telecom', 'out', deductedAmt, dateObj, dateStr, `شحن لرقم آخر`, phone);
                     isProcessed = true;
                 }
 
-                // --- 6. TELECOM - RECEIVED FROM OTHERS ---
+                // 6. TELECOM - RECEIVED FROM OTHERS
                 const rechIn = msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
                 if (!isProcessed && rechIn) {
                     let phone = rechIn[1];
                     let amt = cleanNumber(rechIn[2]);
-
                     addPersonTx(phone, null, 'in', amt, dateObj, dateStr, "استلام شحن رصيد");
                     appData.totalInflow += amt; 
                     pushGlobalTx('telecom', 'in', amt, dateObj, dateStr, `شحن وارد من`, phone);
                     isProcessed = true;
                 }
 
-                // --- 7. WITHDRAWALS (ATM/BRANCH) ---
+                // 7. WITHDRAWALS
                 const withdrawal = msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
                 if (!isProcessed && withdrawal) {
                     let amt = cleanNumber(withdrawal[1]);
-                    appData.totalOutflow += amt; 
-                    appData.withdrawals += amt; 
+                    appData.totalOutflow += amt; appData.withdrawals += amt; 
                     pushGlobalTx('withdrawal', 'out', amt, dateObj, dateStr, 'سحب نقدي (ATM/فرع)', 'خصم من المحفظة');
                     isProcessed = true;
                 }
 
-                // --- 8. DEPOSITS & CASHBACKS ---
+                // 8. DEPOSITS & CASHBACKS
                 const deposit = msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
                 if (!isProcessed && deposit) {
                     let amt = cleanNumber(deposit[1]);
-                    appData.totalInflow += amt; 
-                    appData.deposits += amt; 
+                    appData.totalInflow += amt; appData.deposits += amt; 
                     pushGlobalTx('deposit', 'in', amt, dateObj, dateStr, amt <= 10 ? `مكافأة / كاش باك` : `إيداع نقدي`, 'إضافة للرصيد');
                     isProcessed = true;
                 }
@@ -624,7 +609,6 @@
             } else if (name && appData.people[phone].name === "جهة اتصال مسجلة") { 
                 appData.people[phone].name = name; 
             }
-            
             appData.people[phone].transactions.push({ type, amount: amt, dateObj, dateStr, desc });
             if (type === 'in') appData.people[phone].totalIn += amt;
             if (type === 'out') appData.people[phone].totalOut += amt;
@@ -662,26 +646,90 @@
             }, 300);
 
             renderPeopleList(peopleArray);
-            renderAllTransactions();
+            
+            // Trigger Main Filter to "All"
+            setMainFilter('all');
         }
 
-        function setFilter(cat) {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-chip').forEach(btn => {
+        // --- HIERARCHICAL FILTER LOGIC ---
+        function setMainFilter(type) {
+            currentMainFilter = type;
+            currentSubFilter = 'all'; // Reset sub-filter
+
+            // Update UI for Main Chips
+            document.querySelectorAll('.main-filter-chip').forEach(btn => {
                 btn.classList.remove('active', 'bg-white', 'text-black', 'border-transparent');
                 btn.classList.add('glass', 'text-gray-300', 'border-white/10');
             });
-            const activeBtn = document.getElementById(`filter-${cat}`);
+            const activeMain = document.getElementById(`main-filter-${type}`);
+            if(activeMain) {
+                activeMain.classList.add('active', 'bg-white', 'text-black', 'border-transparent');
+                activeMain.classList.remove('glass', 'text-gray-300', 'border-white/10');
+            }
+
+            renderSubFilters();
+            renderAllTransactions();
+        }
+
+        function renderSubFilters() {
+            const container = document.getElementById('sub-filters-container');
+            
+            if (currentMainFilter === 'all') {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            let html = `<button onclick="setSubFilter('all')" id="sub-filter-all" class="sub-filter-chip active bg-white/20 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/10">الكل</button>`;
+
+            if (currentMainFilter === 'out') {
+                html += `
+                    <button onclick="setSubFilter('transfer_out')" id="sub-filter-transfer_out" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">تحويلات</button>
+                    <button onclick="setSubFilter('telecom_out')" id="sub-filter-telecom_out" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">شحن وفواتير</button>
+                    <button onclick="setSubFilter('online')" id="sub-filter-online" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">دفع أونلاين</button>
+                    <button onclick="setSubFilter('withdrawal')" id="sub-filter-withdrawal" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">سحب كاش</button>
+                `;
+            } else if (currentMainFilter === 'in') {
+                html += `
+                    <button onclick="setSubFilter('transfer_in')" id="sub-filter-transfer_in" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">تحويلات واردة</button>
+                    <button onclick="setSubFilter('telecom_in')" id="sub-filter-telecom_in" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">شحن وارد</button>
+                    <button onclick="setSubFilter('deposit')" id="sub-filter-deposit" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">إيداعات</button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function setSubFilter(cat) {
+            currentSubFilter = cat;
+            document.querySelectorAll('.sub-filter-chip').forEach(btn => {
+                btn.classList.remove('active', 'bg-white/20', 'text-white', 'border-white/10');
+                btn.classList.add('bg-black/50', 'text-gray-400', 'border-white/5');
+            });
+            const activeBtn = document.getElementById(`sub-filter-${cat}`);
             if(activeBtn) {
-                activeBtn.classList.remove('glass', 'text-gray-300', 'border-white/10');
-                activeBtn.classList.add('active', 'bg-white', 'text-black', 'border-transparent');
+                activeBtn.classList.remove('bg-black/50', 'text-gray-400', 'border-white/5');
+                activeBtn.classList.add('active', 'bg-white/20', 'text-white', 'border-white/10');
             }
             renderAllTransactions();
         }
 
         function renderAllTransactions() {
             const list = document.getElementById('allTxList');
-            const filtered = appData.allTransactions.filter(tx => currentFilter === 'all' || tx.category === currentFilter);
+            
+            const filtered = appData.allTransactions.filter(tx => {
+                // 1. Check Main Filter (In/Out)
+                if (currentMainFilter === 'in' && tx.type !== 'in') return false;
+                if (currentMainFilter === 'out' && tx.type !== 'out') return false;
+
+                // 2. Check Sub Filter
+                if (currentSubFilter === 'all') return true;
+                
+                // Handle specific sub-filters mapping
+                if (currentSubFilter === 'telecom_out') return tx.category === 'telecom' && tx.type === 'out';
+                if (currentSubFilter === 'telecom_in') return tx.category === 'telecom' && tx.type === 'in';
+                
+                return tx.category === currentSubFilter;
+            });
 
             if (filtered.length === 0) {
                 list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-receipt text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد عمليات مسجلة هنا.</p></div>`;
