@@ -131,8 +131,8 @@
             <div class="absolute inset-0 border-4 border-voda-red rounded-full border-t-transparent animate-spin"></div>
             <i class="fa-solid fa-fingerprint text-4xl text-white opacity-80"></i>
         </div>
-        <h2 class="text-2xl font-black text-white mb-2" id="loadingTitle">مزامنة البيانات الذكية...</h2>
-        <p class="text-gray-400 text-sm max-w-[250px]">يتم التشفير والتحليل محلياً لضمان السرية التامة</p>
+        <h2 class="text-2xl font-black text-white mb-2" id="loadingTitle">تحليل ذكي للبيانات...</h2>
+        <p class="text-gray-400 text-sm max-w-[250px]">يتم قراءة الأنماط المعقدة وتشفير البيانات محلياً...</p>
     </div>
 
     <div class="w-full max-w-md mx-auto relative pt-safe pb-safe px-5 min-h-screen flex flex-col">
@@ -176,7 +176,7 @@
             <button onclick="document.getElementById('smsFile').click()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold text-lg flex justify-center items-center gap-3 hover:scale-[1.02] transition-transform shadow-[0_10px_30px_rgba(255,255,255,0.15)]">
                 مزامنة السجلات الآن <i class="fa-solid fa-bolt text-voda-red"></i>
             </button>
-            <p class="text-[10px] text-gray-500 font-bold mt-5 flex items-center gap-1.5 justify-center"><i class="fa-solid fa-lock text-gray-600"></i> يتم المعالجة على جهازك بالكامل لحماية خصوصيتك</p>
+            <p class="text-[10px] text-gray-500 font-bold mt-5 flex items-center gap-1.5 justify-center"><i class="fa-solid fa-shield-halved text-gray-600"></i> المعالجة والتشفير يتم على جهازك بالكامل</p>
         </div>
 
         <!-- Dashboard Container -->
@@ -271,7 +271,7 @@
                     </div>
                     <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
                         <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-globe text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">مدفوعات فوري/أونلاين</p>
+                        <p class="text-[11px] text-gray-400 font-bold mb-1">مدفوعات أونلاين</p>
                         <p class="font-bold font-numbers text-white text-lg" id="statOnline">0.00</p>
                     </div>
                     <div class="glass-panel p-4 rounded-2xl col-span-2 flex justify-between items-center relative overflow-hidden border-voda-red/20 bg-gradient-to-r from-[#1a0000] to-transparent">
@@ -391,7 +391,7 @@
 
         // --- UTILS ---
         const formatMoney = (num) => parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const cleanNumber = (str) => str ? str.replace(/,/g, '') : "0";
+        const cleanNumber = (str) => str ? parseFloat(str.replace(/,/g, '')) : 0;
         
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast'), i = document.getElementById('toastIcon');
@@ -451,7 +451,7 @@
             setTimeout(() => { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = ''; }, 400);
         }
 
-        // --- PARSER ENGINE ---
+        // --- NEW SMART PARSER ENGINE ---
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -476,114 +476,161 @@
             if(!text || text.trim() === "") { showToast('الملف فارغ', 'error'); return; }
 
             appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions:[] };
-            let latestDateObj = new Date(0);
+            
+            // Split by separator lines commonly found in exported files
             const blocks = text.split(/==================================================|-----------------------------------------------------/);
+            
+            let latestDateObj = new Date(0);
 
             blocks.forEach(block => {
-                const str = block.trim();
-                if(str.length < 10) return;
+                const msg = block.trim();
+                if(msg.length < 10) return;
+
+                // 1. Skip system errors & OTPs to avoid false triggers
+                if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام)/.test(msg)) {
+                    return; // Fast fail
+                }
 
                 let dateStr = "تاريخ غير معروف", dateObj = new Date(0);
-                const headerMatch = str.match(/Received from (?:VF-Cash|Vodafone) on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
-                if (headerMatch) { dateStr = headerMatch[1]; dateObj = new Date(dateStr); }
+                
+                // Extract Primary Date from header (e.g. "Received from VF-Cash on 2024-12-04 10:08")
+                const headerMatch = msg.match(/Received from (?:VF-Cash|Vodafone) on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
+                if (headerMatch) { 
+                    dateStr = headerMatch[1]; 
+                    dateObj = new Date(dateStr.replace(/-/g, '/')); 
+                } else {
+                    // Fallback to inside-text dates if header is missing (e.g. "تاريخ العملية 18:39 25-11-03")
+                    const innerDateAr = msg.match(/تاريخ العملية\s*(\d{2}:\d{2})\s*(\d{2}-\d{2}-\d{2})/);
+                    if(innerDateAr) {
+                        dateStr = `20${innerDateAr[2]} ${innerDateAr[1]}`;
+                        dateObj = new Date(dateStr.replace(/-/g, '/'));
+                    }
+                }
 
-                const balanceMatch = str.match(/رصيد(?:ك| حسابك(?: ف[يى] فودافون كاش)?| محفظتك)?(?: الحالي)?\s*([\d\.,]+)/i) || str.match(/balance is (?:EGP )?([\d\.,]+)/i);
+                // 2. Extract Current Balance (The most reliable indicator of final state)
+                // Covers: "رصيدك الحالي 400.05", "رصيد حسابك فى فودافون كاش الحالي 400.05", "Available Balance: 77.75", "balance is 1309.25"
+                const balanceMatch = msg.match(/(?:رصيدك الحالي|رصيد حسابك[^\d]*|رصيد محفظتك الحالي|Vodafone Cash balance is|Available Balance:)[:\s]*(?:EGP\s*)?([\d\.,]+)/i);
                 if (balanceMatch && dateObj >= latestDateObj) {
-                    appData.finalBalance = parseFloat(cleanNumber(balanceMatch[1]));
+                    appData.finalBalance = cleanNumber(balanceMatch[1]);
                     latestDateObj = dateObj;
                 }
 
                 let isProcessed = false;
 
-                // 1. WITHDRAWALS
-                const withdrawalAr = str.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
-                if (!isProcessed && withdrawalAr) {
-                    let amt = parseFloat(cleanNumber(withdrawalAr[1]));
-                    appData.totalOutflow += amt; appData.withdrawals += amt; isProcessed = true;
-                    pushGlobalTx('withdrawal', 'out', amt, dateObj, dateStr, 'سحب نقدي (ATM/فرع)', 'خصم من المحفظة');
-                }
-
-                // 2. P2P IN
-                const p2pInAr = str.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة] من رقم\s*(\d+)/i);
-                const p2pInEn = str.match(/Received EGP\s*([\d\.,]+) from (00201\d+|01\d+)/i);
+                // --- PATTERN 1: P2P IN (Received Money) ---
+                // AR: تم استلام مبلغ 3000 جنيه من رقم 01065965318 المسجل بإسم Henry G Massoud على رقم محفظتك
+                // EN: Received EGP2,000 from 00201094360033
+                const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جنيه?\s*من رقم\s*(\d+)/i);
+                const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|\d+)/i);
+                
                 if (!isProcessed && (p2pInAr || p2pInEn)) {
-                    let amt = parseFloat(cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1])); 
-                    let phone = (p2pInAr ? p2pInAr[2] : p2pInEn[2]).replace(/^002/, ''); 
-                    const nameMatch = str.match(/المسجل ب[إا]سم\s*([^.]+?)(?:\s+رصيدك|\s+على رقم|\.|$)/i);
-                    let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي/إنستاباي";
+                    let amt = cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1]);
+                    let rawPhone = p2pInAr ? p2pInAr[2] : p2pInEn[2];
+                    let phone = rawPhone.replace(/^002/, ''); // Normalize phone
+                    
+                    const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+)(?:؛|رصيدك|على رقم|$)/i);
+                    let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي";
+
                     addPersonTx(phone, name, 'in', amt, dateObj, dateStr, "استلام تحويل");
-                    appData.totalInflow += amt; isProcessed = true;
+                    appData.totalInflow += amt; 
                     pushGlobalTx('transfer_in', 'in', amt, dateObj, dateStr, `استلام من ${name}`, phone);
+                    isProcessed = true;
                 }
 
-                // 3. P2P OUT
-                const p2pOutAr = str.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة] لرقم\s*(\d+)/i);
-                const p2pOutEn = str.match(/([\d\.,]+)\s*(?:L\.E)?\s*were successfully transferred to (\d+)/i);
+                // --- PATTERN 2: P2P OUT (Sent Money) ---
+                // AR: تم تحويل 50.0 جنيه لرقم 01044741547. مصاريف الخدمة 1.0 جنيه.
+                // EN: 5175 L.E were successfully transferred to 01068969074 the transfer fee is 1 LE
+                const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جنيه?\s*لرقم\s*(\d+).*?مصاريف الخدمة\s*([\d\.,]+)/i);
+                const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+).*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
+
                 if (!isProcessed && (p2pOutAr || p2pOutEn)) {
-                    let amt = parseFloat(cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1])); 
+                    let amt = cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1]);
                     let phone = p2pOutAr ? p2pOutAr[2] : p2pOutEn[2];
-                    const feeAr = str.match(/مصاريف الخدمة\s*([\d\.,]+)/i);
-                    const feeEn = str.match(/transfer fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
-                    let fee = feeAr ? parseFloat(cleanNumber(feeAr[1])) : (feeEn ? parseFloat(cleanNumber(feeEn[1])) : 0);
+                    let fee = cleanNumber(p2pOutAr ? p2pOutAr[3] : p2pOutEn[3]);
+
                     addPersonTx(phone, null, 'out', amt, dateObj, dateStr, "إرسال تحويل");
-                    appData.totalOutflow += amt; appData.feesPaid += fee; isProcessed = true;
+                    appData.totalOutflow += amt; 
+                    appData.feesPaid += fee;
                     pushGlobalTx('transfer_out', 'out', amt, dateObj, dateStr, `تحويل إلى حساب`, phone);
+                    isProcessed = true;
                 }
 
-                // 4. Recharge Others (UPDATED)
-                const rechOthers = str.match(/(?:شحن رصيد|دفع فاتورة).*?(?:إلى|الى) رقم\s*(\d+)/i);
-                if (!isProcessed && rechOthers) {
-                    let phone = rechOthers[1];
-                    let amtMatch = str.match(/(?:خصم|بمبلغ|ب)\s*([\d\.,]+)\s*جني[هة]/i) || str.match(/([\d\.,]+)\s*جني[هة]/i);
-                    if (amtMatch) {
-                        let deducted = parseFloat(cleanNumber(amtMatch[1]));
-                        addPersonTx(phone, null, 'out', deducted, dateObj, dateStr, "شحن رصيد/فاتورة للغير");
-                        appData.totalOutflow += deducted; appData.telecom += deducted; isProcessed = true;
-                        pushGlobalTx('telecom', 'out', deducted, dateObj, dateStr, `شحن/فاتورة لرقم آخر`, phone);
-                    }
-                }
-
-                // 5. Recharge Self
-                const selfRechAr = str.match(/(?:شحن رصيد موبايلك ب|تجديد باقة).*?([\d\.,]+).*?خصم\s*([\d\.,]+)/i);
-                const selfRechEn = str.match(/([\d\.,]+)\s*L\.E was successfully recharged to your mobile balance/i);
-                if (!isProcessed && (selfRechAr || selfRechEn)) {
-                    let amt = selfRechAr ? parseFloat(cleanNumber(selfRechAr[2])) : parseFloat(cleanNumber(selfRechEn[1]));
-                    appData.totalOutflow += amt; appData.telecom += amt; isProcessed = true;
-                    pushGlobalTx('telecom', 'out', amt, dateObj, dateStr, `شحن رصيد/تجديد باقة`, 'فودافون');
-                }
-
-                // 6. Recharge FROM Others
-                const rechFromOthers = str.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
-                if (!isProcessed && rechFromOthers) {
-                    let phone = rechFromOthers[1]; let amt = parseFloat(cleanNumber(rechFromOthers[2]));
-                    addPersonTx(phone, null, 'in', amt, dateObj, dateStr, "استلام شحن رصيد");
-                    appData.totalInflow += amt; isProcessed = true;
-                    pushGlobalTx('telecom', 'in', amt, dateObj, dateStr, `شحن وارد من`, phone);
-                }
-
-                // 7. Online Payments / Fawry (UPDATED)
-                const onlinePay = str.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:ل|إلى)\s*([^\.]+)/i);
-                const vcnIssue = str.match(/اصدار كارت الدفع.*?خصم\s*([\d\.,]+)/i);
+                // --- PATTERN 3: ONLINE / FAWRY PAYMENTS ---
+                // AR: تم دفع مبلغ 257.14جنية لNzmly.
+                const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)([^.]+)/i);
+                const vcnIssue = msg.match(/اصدار كارت الدفع.*?خصم\s*([\d\.,]+)/i);
+                
                 if (!isProcessed && onlinePay) {
-                    let amt = parseFloat(cleanNumber(onlinePay[1]));
+                    let amt = cleanNumber(onlinePay[1]);
                     let merchant = onlinePay[2].trim();
-                    appData.totalOutflow += amt; appData.online += amt; isProcessed = true;
+                    appData.totalOutflow += amt; 
+                    appData.online += amt; 
                     pushGlobalTx('online', 'out', amt, dateObj, dateStr, `مدفوعات أونلاين/فوري`, merchant);
+                    isProcessed = true;
                 }
-                if (!isProcessed && vcnIssue) {
-                    appData.feesPaid += parseFloat(cleanNumber(vcnIssue[1])); isProcessed = true;
+                if (vcnIssue) { appData.feesPaid += cleanNumber(vcnIssue[1]); }
+
+                // --- PATTERN 4: TELECOM - RECHARGE SELF ---
+                // AR: تم شحن رصيد موبايلك ب 10.01ج بنجاح وخصم 14.3ج من محفظتك
+                // EN: 147 L.E was successfully recharged to your mobile
+                const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة).*?خصم\s*([\d\.,]+)/i);
+                const selfRechEn = msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
+                
+                if (!isProcessed && (selfRechAr || selfRechEn)) {
+                    let amt = cleanNumber(selfRechAr ? selfRechAr[1] : selfRechEn[1]);
+                    appData.totalOutflow += amt; 
+                    appData.telecom += amt; 
+                    pushGlobalTx('telecom', 'out', amt, dateObj, dateStr, `شحن/تجديد خطك`, 'فودافون');
+                    isProcessed = true;
                 }
 
-                // 8. Deposits & Refunds
-                const deposit = str.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
+                // --- PATTERN 5: TELECOM - RECHARGE OTHERS ---
+                // AR: تم شحن رصيد ب 16.5 ج بنجاح إلى رقم 01070954997 وخصم 16.5 ج من محفظتك
+                const rechOut = msg.match(/شحن رصيد ب.*?إلى رقم\s*(\d+)\s*وخصم\s*([\d\.,]+)/i);
+                
+                if (!isProcessed && rechOut) {
+                    let phone = rechOut[1];
+                    let deductedAmt = cleanNumber(rechOut[2]);
+                    
+                    addPersonTx(phone, null, 'out', deductedAmt, dateObj, dateStr, "شحن رصيد للغير");
+                    appData.totalOutflow += deductedAmt; 
+                    appData.telecom += deductedAmt; 
+                    pushGlobalTx('telecom', 'out', deductedAmt, dateObj, dateStr, `شحن لرقم آخر`, phone);
+                    isProcessed = true;
+                }
+
+                // --- PATTERN 6: TELECOM - RECEIVED FROM OTHERS ---
+                // AR: رقم 01064164867 شحنلك ب 19.5 ج بنجاح من خلال خدمة فودافون كاش.
+                const rechIn = msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
+                if (!isProcessed && rechIn) {
+                    let phone = rechIn[1];
+                    let amt = cleanNumber(rechIn[2]);
+
+                    addPersonTx(phone, null, 'in', amt, dateObj, dateStr, "استلام شحن رصيد");
+                    appData.totalInflow += amt; 
+                    pushGlobalTx('telecom', 'in', amt, dateObj, dateStr, `شحن وارد من`, phone);
+                    isProcessed = true;
+                }
+
+                // --- PATTERN 7: WITHDRAWALS (ATM/BRANCH) ---
+                // AR: تم سحب مبلغ 500.00 جنية من محفظة
+                const withdrawal = msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
+                if (!isProcessed && withdrawal) {
+                    let amt = cleanNumber(withdrawal[1]);
+                    appData.totalOutflow += amt; 
+                    appData.withdrawals += amt; 
+                    pushGlobalTx('withdrawal', 'out', amt, dateObj, dateStr, 'سحب نقدي (ATM/فرع)', 'خصم من المحفظة');
+                    isProcessed = true;
+                }
+
+                // --- PATTERN 8: DEPOSITS & CASHBACKS ---
+                // AR: تم إيداع 1.0 جنيه رصيدك الحالي
+                const deposit = msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
                 if (!isProcessed && deposit) {
-                    let amt = parseFloat(cleanNumber(deposit[1]));
-                    if (str.includes("رد مبلغ") || amt <= 2.0) { 
-                        appData.feesPaid -= amt; // Refund
-                    } else { 
-                        appData.totalInflow += amt; appData.deposits += amt; 
-                        pushGlobalTx('deposit', 'in', amt, dateObj, dateStr, `إيداع نقدي`, 'تم إضافة الرصيد');
-                    }
+                    let amt = cleanNumber(deposit[1]);
+                    appData.totalInflow += amt; 
+                    appData.deposits += amt; 
+                    pushGlobalTx('deposit', 'in', amt, dateObj, dateStr, amt <= 10 ? `مكافأة / كاش باك` : `إيداع نقدي`, 'إضافة للرصيد');
                     isProcessed = true;
                 }
 
@@ -591,18 +638,24 @@
             });
 
             if (appData.parsedCount === 0) {
-                showToast('لم نجد أي بيانات قابلة للقراءة.', 'error'); setStatus('فشل المزامنة', 'bg-voda-red text-voda-red'); return;
+                showToast('عفواً، لم يتم العثور على أي عمليات مالية قابلة للتحليل.', 'error'); 
+                setStatus('فشل المزامنة', 'bg-voda-red text-voda-red'); 
+                return;
             }
 
+            // Object to Array mapping and sorting
             peopleArray = Object.values(appData.people).sort((a, b) => (b.totalIn + b.totalOut) - (a.totalIn + a.totalOut));
-            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj);
+            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj); // Newest first
             
             buildUI();
         }
 
         function addPersonTx(phone, name, type, amt, dateObj, dateStr, desc) {
-            if (!appData.people[phone]) { appData.people[phone] = { phone: phone, name: name || "مستخدم فودافون كاش", totalIn: 0, totalOut: 0, transactions:[] }; } 
-            else if (name && appData.people[phone].name.includes("مستخدم فودافون")) { appData.people[phone].name = name; }
+            if (!appData.people[phone]) { 
+                appData.people[phone] = { phone: phone, name: name || "جهة اتصال مسجلة", totalIn: 0, totalOut: 0, transactions:[] }; 
+            } else if (name && appData.people[phone].name === "جهة اتصال مسجلة") { 
+                appData.people[phone].name = name; 
+            }
             
             appData.people[phone].transactions.push({ type, amount: amt, dateObj, dateStr, desc });
             if (type === 'in') appData.people[phone].totalIn += amt;
@@ -622,6 +675,7 @@
             setStatus('متزامن محلياً', 'bg-emerald-500 text-emerald-400');
             showToast('تمت المزامنة وتحليل البيانات بنجاح!');
 
+            // Apply Values & Animations
             animateValue(document.getElementById('finalBalance'), 0, appData.finalBalance, 1200, true);
             animateValue(document.getElementById('totalIn'), 0, appData.totalInflow, 1000);
             animateValue(document.getElementById('totalOut'), 0, appData.totalOutflow, 1000);
@@ -685,9 +739,10 @@
                     default: icon = 'fa-receipt'; bgIcon = 'bg-gray-800 text-gray-300';
                 }
 
+                // Date Formatting cleanly
                 const d = tx.dateStr.split(' ');
                 const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
-                const delay = Math.min(idx * 50, 500);
+                const delay = Math.min(idx * 20, 400); // Fast cascade effect
 
                 return `
                 <div class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 hover:bg-white/5 transition-colors animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
@@ -710,14 +765,14 @@
             const list = document.getElementById('peopleList');
             document.getElementById('peopleCount').innerText = arr.length;
 
-            if (arr.length === 0) { list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-address-book text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد جهات اتصال.</p></div>`; return; }
+            if (arr.length === 0) { list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-address-book text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد جهات اتصال مسجلة.</p></div>`; return; }
 
             list.innerHTML = arr.map((p, idx) => {
                 let net = p.totalIn - p.totalOut;
                 let isPos = net >= 0;
                 let color = isPos ? 'text-emerald-400' : 'text-white';
                 let sign = isPos ? '+' : '';
-                const delay = Math.min(idx * 50, 500);
+                const delay = Math.min(idx * 20, 400);
 
                 return `
                 <div onclick="openPerson('${p.phone}')" class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 cursor-pointer hover:bg-white/5 transition-all active:scale-[0.98] animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
