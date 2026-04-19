@@ -1,848 +1,1035 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>V-Cash Pro | Premium Fintech</title>
-    
-    <!-- Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>V-Cash Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Syne:wght@700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans:['Cairo','sans-serif'], display:['Syne','sans-serif'], mono:['DM Mono','monospace'] },
+      colors: { voda: { red:'#E60000', light:'#FF3333', dark:'#080808', gold:'#C8A84B' } }
+    }}
+  }
+</script>
+<style>
+  :root { --red:#E60000; --gold:#C8A84B; --border:rgba(255,255,255,0.07); --card:#0f0f0f; }
+  *,*::before,*::after { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:#080808; color:#fff; overflow-x:hidden; font-family:'Cairo',sans-serif; }
+  ::-webkit-scrollbar { display:none; }
+  .hide-scroll { -ms-overflow-style:none; scrollbar-width:none; }
+  .pb-safe { padding-bottom:calc(env(safe-area-inset-bottom,0px) + 96px); }
+  .pt-safe { padding-top:max(env(safe-area-inset-top,0px),20px); }
 
-    <!-- Tailwind Config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans:['Cairo', 'sans-serif'], 
-                        numbers: ['Space Grotesk', 'sans-serif'] 
-                    },
-                    colors: { 
-                        voda: { 
-                            red: '#E60000', 
-                            light: '#ff3333',
-                            dark: '#0a0a0a', 
-                            card: '#141414', 
-                            border: 'rgba(255,255,255,0.08)' 
-                        } 
-                    },
-                    boxShadow: {
-                        'glow': '0 0 20px rgba(230, 0, 0, 0.4)',
-                        'glow-lg': '0 0 40px rgba(230, 0, 0, 0.3)',
-                    }
-                }
-            }
-        }
-    </script>
+  /* Glass */
+  .glass { background:rgba(255,255,255,0.04); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); }
+  .glass-dark { background:rgba(0,0,0,0.6); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid var(--border); }
+  .panel { background:linear-gradient(160deg,rgba(20,20,20,.9) 0%,rgba(10,10,10,.95) 100%); border:1px solid var(--border); }
 
-    <style>
-        body { background-color: #000000; color: #ffffff; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 110px); }
-        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
-        
-        /* Hide Scrollbar */
-        ::-webkit-scrollbar { display: none; } 
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Debit Card */
+  .debit-card {
+    background:linear-gradient(135deg,#1c1c1c 0%,#0e0e0e 45%,#1a0000 100%);
+    border:1px solid rgba(230,0,0,.2);
+    box-shadow:0 28px 56px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);
+    position:relative; overflow:hidden; border-radius:24px;
+  }
+  .debit-card::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 75% 15%, rgba(230,0,0,.3) 0%, transparent 55%);
+    pointer-events:none; z-index:1;
+  }
+  .card-noise {
+    position:absolute; inset:0; opacity:.03;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:2;
+  }
+  .card-shine {
+    position:absolute; top:0; left:-200%; width:55%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);
+    transform:skewX(-18deg); animation:shine 9s ease-in-out infinite; z-index:3; pointer-events:none;
+  }
+  @keyframes shine { 0%{left:-200%} 25%{left:250%} 100%{left:250%} }
 
-        /* Premium Glass Components */
-        .glass { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--tw-colors-voda-border); }
-        .glass-panel { background: linear-gradient(180deg, rgba(30,30,30,0.7) 0%, rgba(15,15,15,0.9) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+  /* EMV Chip */
+  .chip {
+    width:42px; height:30px; border-radius:6px; position:relative;
+    background:linear-gradient(135deg,#b8922a 0%,#e8c560 35%,#a07020 65%,#c8a030 100%);
+    box-shadow:0 2px 6px rgba(0,0,0,.5); overflow:hidden;
+  }
+  .chip::before { content:''; position:absolute; inset:5px; border:1px solid rgba(0,0,0,.25); border-radius:2px; }
+  .chip-h { position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(0,0,0,.2); }
+  .chip-v { position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(0,0,0,.2); }
 
-        /* Premium Debit Card Design */
-        .premium-card {
-            background: linear-gradient(135deg, #111 0%, #000 100%);
-            position: relative; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(230, 0, 0, 0.35), inset 0 1px 1px rgba(255,255,255,0.2);
-            border: 1px solid rgba(230, 0, 0, 0.3);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-        .premium-card::before {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(circle at top right, rgba(230,0,0,0.4) 0%, transparent 60%);
-            z-index: 1; pointer-events: none;
-        }
-        .card-shine {
-            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
-            transform: skewX(-20deg); animation: shine 6s infinite; z-index: 2;
-        }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+  /* Animations */
+  @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+  @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes popIn   { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:scale(1)} }
+  @keyframes pulseDot{ 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes bounce  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes barGrow { from{transform:scaleY(0)} to{transform:scaleY(1)} }
 
-        /* Progress Bars */
-        .progress-bar-bg { background: #222; border-radius: 99px; height: 6px; width: 100%; overflow: hidden; display: flex; }
-        .progress-bar-fill { height: 100%; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 10px currentColor; }
+  .anim-fade { animation:fadeIn .45s ease forwards; }
+  .anim-up   { animation:slideUp .55s cubic-bezier(.22,1,.36,1) forwards; opacity:0; }
+  .anim-pop  { animation:popIn .5s cubic-bezier(.22,1,.36,1) forwards; opacity:0; }
 
-        /* Animations */
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
-        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.9); }
-        
-        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popIn { to { transform: scale(1); opacity: 1; } }
+  /* Navigation */
+  .nav-dock { background:rgba(10,10,10,.92); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); border:1px solid rgba(255,255,255,.09); border-radius:28px; }
+  .nav-btn   { color:#3a3a3a; transition:all .3s cubic-bezier(.4,0,.2,1); flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0; }
+  .nav-btn.active { color:#fff; }
+  .nav-btn.active i { filter:drop-shadow(0 0 10px rgba(255,255,255,.35)); }
+  .nav-dot { width:4px; height:4px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); margin:3px auto 0; opacity:0; transition:opacity .3s; }
+  .nav-btn.active .nav-dot { opacity:1; }
 
-        /* Floating Nav */
-        .floating-dock { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 8px 16px; }
-        .nav-item { color: #555; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-        .nav-item.active { color: #fff; }
-        .nav-item.active i { transform: translateY(-2px); text-shadow: 0 0 15px rgba(255,255,255,0.5); }
-        .nav-indicator { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%) scale(0); width: 4px; height: 4px; border-radius: 50%; background: #E60000; transition: transform 0.3s; box-shadow: 0 0 8px #E60000;}
-        .nav-item.active .nav-indicator { transform: translateX(-50%) scale(1); }
+  /* Modal */
+  .modal-overlay { opacity:0; pointer-events:none; transition:opacity .3s; background:rgba(0,0,0,.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+  .modal-overlay.open { opacity:1; pointer-events:auto; }
+  .modal-sheet { transform:translateY(100%); transition:transform .45s cubic-bezier(.32,.72,0,1); }
+  .modal-overlay.open .modal-sheet { transform:translateY(0); }
 
-        /* Quick Action Buttons */
-        .action-btn { transition: transform 0.2s, background 0.2s; }
-        .action-btn:active { transform: scale(0.92); }
+  /* Progress */
+  .prog { height:5px; background:#1c1c1c; border-radius:99px; overflow:hidden; }
+  .prog-fill { height:100%; border-radius:99px; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
 
-        /* Modals */
-        .modal-sheet { transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); transform: translateY(100%); }
-        .modal-active .modal-sheet { transform: translateY(0); }
-        .modal-overlay { transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
-        .modal-active.modal-overlay { opacity: 1; pointer-events: auto; }
-    </style>
+  /* Filter chips */
+  .chip-btn { padding:7px 14px; border-radius:12px; font-size:11px; font-weight:700; white-space:nowrap; transition:all .25s; border:1px solid var(--border); }
+  .chip-btn.on  { background:#fff; color:#000; border-color:transparent; }
+  .chip-btn.off { background:rgba(255,255,255,.04); color:#888; }
+
+  /* Drag zone */
+  .drop-zone { border:1.5px dashed rgba(255,255,255,.12); transition:all .3s; }
+  .drop-zone.dragging { border-color:var(--red); background:rgba(230,0,0,.05); }
+
+  /* Bar chart */
+  .bar-col { transform-origin:bottom; animation:barGrow .7s cubic-bezier(.22,1,.36,1) backwards; }
+  
+  /* Sparkline */
+  .spark-path { fill:none; stroke:url(#sg); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .spark-area { fill:url(#sag); }
+
+  /* Action buttons */
+  .act-btn { transition:transform .18s; }
+  .act-btn:active { transform:scale(.91); }
+
+  /* Toast */
+  #toast { transition:all .4s cubic-bezier(.22,1,.36,1); }
+</style>
 </head>
+<body class="selection:bg-red-900/30">
 
-<body class="selection:bg-voda-red/30 relative">
+<!-- Ambient Glows -->
+<div class="fixed top-0 left-0 w-[65vw] h-[65vw] rounded-full pointer-events-none -z-10" style="background:radial-gradient(circle,rgba(230,0,0,.12) 0%,transparent 70%);filter:blur(60px);transform:translate(-30%,-30%)"></div>
+<div class="fixed bottom-0 right-0 w-[55vw] h-[55vw] rounded-full pointer-events-none -z-10" style="background:radial-gradient(circle,rgba(230,0,0,.07) 0%,transparent 70%);filter:blur(50px);transform:translate(30%,30%)"></div>
 
-    <div class="fixed top--10 left--20 w-[70vw] h-[70vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.15)_0%,transparent_60%)] blur-[60px] z-[-1]"></div>
-    <div class="fixed bottom--10 right--20 w-[60vw] h-[60vw] rounded-full bg-[radial-gradient(circle,rgba(230,0,0,0.1)_0%,transparent_60%)] blur-[50px] z-[-1]"></div>
+<!-- Toast -->
+<div id="toast" class="fixed z-[100] left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-5 py-3 rounded-full glass-dark border border-white/10 shadow-2xl text-sm font-bold max-w-[88vw]" style="top:max(env(safe-area-inset-top,16px),16px);transform:translateX(-50%) translateY(-80px);opacity:0">
+  <i id="toast-ico" class="fa-solid fa-check-circle text-emerald-400 text-base"></i>
+  <span id="toast-msg">رسالة</span>
+</div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-safe mt-4 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white px-5 py-3.5 rounded-full shadow-glow transition-all duration-400 transform -translate-y-32 opacity-0 z-[100] flex items-center gap-3 font-bold text-sm border border-white/10 w-max max-w-[90%] backdrop-blur-xl">
-        <i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400 text-lg"></i>
-        <span id="toastMsg">رسالة</span>
-    </div>
+<!-- Loading -->
+<div id="loading" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[90] hidden flex-col items-center justify-center gap-6 text-center px-8">
+  <div class="relative w-24 h-24">
+    <div class="absolute inset-0 border-[3px] border-voda-red/20 rounded-full"></div>
+    <div class="absolute inset-0 border-[3px] border-t-voda-red border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+    <div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-chart text-3xl text-white/70"></i></div>
+  </div>
+  <div>
+    <h2 class="text-xl font-black mb-1">تحليل ذكي للبيانات</h2>
+    <p class="text-gray-500 text-sm">يتم استخراج جميع العمليات تلقائياً...</p>
+  </div>
+</div>
 
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[60] hidden flex-col items-center justify-center p-6 text-center animate-fade-in">
-        <div class="relative w-28 h-28 mb-8 flex items-center justify-center">
-            <div class="absolute inset-0 border-4 border-voda-red/20 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-voda-red rounded-full border-t-transparent animate-spin"></div>
-            <i class="fa-solid fa-fingerprint text-4xl text-white opacity-80"></i>
+<!-- App Shell -->
+<div class="w-full max-w-md mx-auto relative min-h-screen flex flex-col px-4">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between mb-5 pt-safe shrink-0 anim-up">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#1a1a1a,#000)">
+        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/vodafone-icon.png" class="w-5 h-5 object-contain invert" alt="">
+        <div class="absolute inset-0 bg-voda-red/15 mix-blend-overlay"></div>
+      </div>
+      <div>
+        <h1 class="text-lg font-black leading-none tracking-wide" style="font-family:'Syne',sans-serif">V-Cash <span style="color:var(--red)">PRO</span></h1>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-600" id="s-dot" style="animation:pulseDot 2s infinite"></span>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-gray-500" id="s-txt">غير متصل</span>
         </div>
-        <h2 class="text-2xl font-black text-white mb-2" id="loadingTitle">تحليل ذكي للبيانات...</h2>
-        <p class="text-gray-400 text-sm max-w-[250px]">يتم معالجة النصوص العشوائية واستخراج الأرقام بدقة...</p>
+      </div>
     </div>
+    <button onclick="triggerUpload()" class="w-9 h-9 rounded-full glass flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/8 transition" title="رفع ملف جديد">
+      <i class="fa-solid fa-arrow-up-from-bracket text-sm"></i>
+    </button>
+    <input type="file" id="fileIn" accept=".txt" class="hidden" onchange="handleFile(event)">
+  </header>
 
-    <div class="w-full max-w-md mx-auto relative pt-safe pb-safe px-5 min-h-screen flex flex-col">
-        
-        <!-- Header -->
-        <header class="flex justify-between items-center mb-6 pt-4 animate-slide-up shrink-0">
+  <!-- Empty State -->
+  <div id="empty" class="flex-1 flex flex-col items-center justify-center text-center pb-20 anim-up" style="animation-delay:.1s">
+    <!-- Drop Zone -->
+    <div id="dropZone" class="drop-zone w-full rounded-3xl p-10 mb-6 flex flex-col items-center gap-4 cursor-pointer" onclick="triggerUpload()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <div class="relative w-28 h-28">
+        <div class="absolute inset-0 rounded-3xl rotate-12 opacity-30 blur-lg" style="background:linear-gradient(135deg,var(--red),#4a0000)"></div>
+        <div class="absolute inset-0 rounded-3xl -rotate-6 panel flex items-center justify-center overflow-hidden">
+          <div class="absolute top-0 right-0 w-16 h-16 rounded-full" style="background:radial-gradient(circle,rgba(230,0,0,.2),transparent);filter:blur(12px)"></div>
+          <i class="fa-solid fa-credit-card text-5xl text-white/20"></i>
+        </div>
+        <div class="absolute bottom-1 -left-2 w-11 h-11 rounded-full flex items-center justify-center border-2 border-[#080808] shadow-xl" style="background:var(--red);animation:bounce 2.5s ease-in-out infinite">
+          <i class="fa-solid fa-bolt text-white text-base"></i>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-2xl font-black mb-2 tracking-tight">أسقط ملفك هنا</h2>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-[260px] mx-auto">أو انقر لاختيار ملف رسائل فودافون كاش (.txt)</p>
+      </div>
+    </div>
+    <button onclick="triggerUpload()" class="w-full py-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-3 bg-white text-black hover:bg-gray-100 transition-colors shadow-[0_12px_32px_rgba(255,255,255,.12)]">
+      <i class="fa-solid fa-file-import text-voda-red"></i> تحليل السجل الآن
+    </button>
+    <p class="text-[10px] text-gray-600 font-bold mt-4 flex items-center gap-1.5 justify-center">
+      <i class="fa-solid fa-shield-halved"></i> معالجة كاملة على جهازك · لا يُرفع أي بيانات
+    </p>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash" class="hidden flex-1 flex flex-col">
+
+    <!-- TAB: HOME -->
+    <div id="v-home" class="flex flex-col gap-5 anim-fade pb-safe hide-scroll overflow-y-auto">
+      
+      <!-- Debit Card -->
+      <div class="debit-card anim-pop" style="aspect-ratio:1.586;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between">
+        <div class="card-noise"></div>
+        <div class="card-shine"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="chip"><div class="chip-h"></div><div class="chip-v"></div></div>
+          <div class="text-right">
+            <div class="text-[9px] font-bold tracking-[.2em] text-white/40 uppercase mb-0.5">Wallet</div>
+            <div class="font-mono text-[11px] text-white/60 font-medium" id="c-wallet">—</div>
+          </div>
+        </div>
+        <div class="relative z-10">
+          <div class="text-[9px] font-bold uppercase tracking-[.2em] text-white/40 mb-1">الرصيد المتاح</div>
+          <div id="c-balance" class="text-[2.5rem] font-black leading-none text-white" style="font-family:'DM Mono',monospace">
+            0<span style="font-size:1.5rem;opacity:.6">.00</span>
+          </div>
+          <div class="flex items-end justify-between mt-4">
+            <div class="font-mono text-white/50 text-sm tracking-[.18em]" id="c-period">····  ····  ····</div>
+            <div class="flex flex-col items-end gap-1">
+              <div class="w-8 h-5 relative"><div class="absolute w-5 h-5 rounded-full" style="background:rgba(230,0,0,.8);left:0"></div><div class="absolute w-5 h-5 rounded-full" style="background:rgba(200,168,75,.8);right:0;mix-blend-mode:screen"></div></div>
+              <div class="text-[8px] text-white/40 font-bold tracking-widest uppercase">VCASH</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-4 gap-2 anim-up" style="animation-delay:.08s">
+        <button onclick="goTab('transactions');setMainFilter('out')" class="act-btn flex flex-col items-center gap-2 py-3 panel rounded-2xl hover:bg-white/5 transition">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center"><i class="fa-solid fa-arrow-up text-sm"></i></div>
+          <span class="text-[10px] text-gray-400 font-bold">صادر</span>
+        </button>
+        <button onclick="goTab('transactions');setMainFilter('in')" class="act-btn flex flex-col items-center gap-2 py-3 panel rounded-2xl hover:bg-white/5 transition">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-emerald-400"><i class="fa-solid fa-arrow-down text-sm"></i></div>
+          <span class="text-[10px] text-gray-400 font-bold">وارد</span>
+        </button>
+        <button onclick="goTab('people')" class="act-btn flex flex-col items-center gap-2 py-3 panel rounded-2xl hover:bg-white/5 transition">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-blue-400"><i class="fa-solid fa-user-group text-sm"></i></div>
+          <span class="text-[10px] text-gray-400 font-bold">أشخاص</span>
+        </button>
+        <button onclick="goTab('analytics')" class="act-btn flex flex-col items-center gap-2 py-3 panel rounded-2xl hover:bg-white/5 transition">
+          <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-purple-400"><i class="fa-solid fa-chart-line text-sm"></i></div>
+          <span class="text-[10px] text-gray-400 font-bold">تحليل</span>
+        </button>
+      </div>
+
+      <!-- Cash Flow -->
+      <div class="panel rounded-2xl p-5 anim-up" style="animation-delay:.14s">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-sm font-black text-white">تدفق الأموال</h3>
+          <span class="text-[10px] text-gray-500 glass px-2.5 py-1 rounded-lg font-mono border-0" id="tx-count">0 عملية</span>
+        </div>
+        <div class="prog mb-3">
+          <div id="bar-in" class="prog-fill bg-emerald-500 shadow-[0_0_8px_#10b981]" style="width:0;float:right"></div>
+          <div id="bar-out" class="prog-fill bg-voda-red shadow-[0_0_8px_#E60000]" style="width:0"></div>
+        </div>
+        <div class="flex justify-between">
+          <div>
+            <div class="flex items-center gap-1.5 mb-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-[10px] text-gray-500 font-bold">وارد</span></div>
+            <div class="font-mono text-white font-bold text-sm" id="h-in">0.00</div>
+          </div>
+          <div class="text-right">
+            <div class="flex items-center gap-1.5 mb-1 justify-end"><span class="text-[10px] text-gray-500 font-bold">صادر</span><span class="w-2 h-2 rounded-full bg-voda-red"></span></div>
+            <div class="font-mono text-white font-bold text-sm" id="h-out">0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance Sparkline -->
+      <div class="panel rounded-2xl p-5 anim-up" style="animation-delay:.18s" id="sparkSection">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-sm font-black text-white">تطور الرصيد</h3>
+          <span class="text-[10px] text-gray-500 font-mono" id="spark-range">—</span>
+        </div>
+        <div id="sparkContainer" class="h-16 w-full relative overflow-hidden"></div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="anim-up" style="animation-delay:.22s">
+        <h3 class="text-sm font-black text-white mb-3 px-1">تحليل المصروفات</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="panel rounded-2xl p-4">
+            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center mb-6"><i class="fa-solid fa-money-bill text-xs text-gray-400"></i></div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1">سحب ATM</div>
+            <div class="font-mono font-bold text-white text-base" id="st-atm">0.00</div>
+          </div>
+          <div class="panel rounded-2xl p-4">
+            <div class="w-8 h-8 rounded-full bg-emerald-900/30 flex items-center justify-center mb-6"><i class="fa-solid fa-arrow-right-to-city text-xs text-emerald-400"></i></div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1">إيداع نقدي</div>
+            <div class="font-mono font-bold text-emerald-400 text-base" id="st-dep">0.00</div>
+          </div>
+          <div class="panel rounded-2xl p-4">
+            <div class="w-8 h-8 rounded-full bg-blue-900/30 flex items-center justify-center mb-6"><i class="fa-solid fa-mobile-screen text-xs text-blue-400"></i></div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1">شحن وفواتير</div>
+            <div class="font-mono font-bold text-white text-base" id="st-tel">0.00</div>
+          </div>
+          <div class="panel rounded-2xl p-4">
+            <div class="w-8 h-8 rounded-full bg-purple-900/30 flex items-center justify-center mb-6"><i class="fa-solid fa-globe text-xs text-purple-400"></i></div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1">مدفوعات أونلاين</div>
+            <div class="font-mono font-bold text-white text-base" id="st-onl">0.00</div>
+          </div>
+          <div class="col-span-2 panel rounded-2xl p-4 flex items-center justify-between" style="background:linear-gradient(135deg,rgba(230,0,0,.08),transparent)">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg relative overflow-hidden">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/512px-Vodafone_icon.svg.png" class="w-5 h-5 object-contain drop-shadow invert brightness-0 relative z-10">
-                    <div class="absolute inset-0 bg-voda-red/20 mix-blend-overlay"></div>
-                </div>
-                <div>
-                    <h1 class="text-xl font-black text-white leading-none tracking-wide">V-Cash <span class="text-transparent bg-clip-text bg-gradient-to-r from-voda-light to-voda-red">PRO</span></h1>
-                    <div class="flex items-center gap-1.5 mt-1">
-                        <div class="w-1.5 h-1.5 rounded-full bg-gray-500" id="statusDot"></div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest" id="statusText">غير متزامن</p>
-                    </div>
-                </div>
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(230,0,0,.15)"><i class="fa-solid fa-percent text-voda-red text-sm"></i></div>
+              <div>
+                <div class="text-xs font-black text-white">رسوم الخدمة</div>
+                <div class="text-[9px] text-gray-500 mt-0.5">تحويل · سحب · VCN</div>
+              </div>
             </div>
-            <button class="w-10 h-10 rounded-full glass flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition" onclick="document.getElementById('smsFile').click()">
-                <i class="fa-solid fa-rotate text-sm"></i>
-            </button>
-            <input type="file" id="smsFile" accept=".txt" class="hidden" onchange="handleFileUpload(event)">
-        </header>
-
-        <!-- Empty State -->
-        <div id="emptyState" class="flex-1 flex flex-col items-center justify-center text-center pb-20 animate-slide-up delay-100">
-            <div class="w-40 h-40 relative mb-8">
-                <div class="absolute inset-0 bg-gradient-to-tr from-voda-red to-[#4a0000] rounded-3xl transform rotate-12 opacity-40 blur-lg"></div>
-                <div class="absolute inset-0 bg-gradient-to-bl from-gray-800 to-black rounded-3xl transform -rotate-6 border border-white/10 shadow-2xl flex items-center justify-center overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-voda-red/20 blur-xl rounded-full"></div>
-                    <i class="fa-brands fa-nfc-symbol text-5xl text-white/30 transform rotate-90"></i>
-                </div>
-                <div class="absolute bottom-2 -right-2 w-12 h-12 bg-voda-red rounded-full flex items-center justify-center shadow-glow border-2 border-black animate-bounce" style="animation-duration: 2s;">
-                    <i class="fa-solid fa-arrow-up-from-bracket text-white text-lg"></i>
-                </div>
-            </div>
-            <h2 class="text-3xl font-black text-white mb-3 tracking-tight">إدارة مالية <span class="text-voda-red">أذكى</span></h2>
-            <p class="text-sm text-gray-400 mb-10 max-w-[280px] mx-auto leading-relaxed">اكتشف تفاصيل نفقاتك، رصيدك الختامي، وإحصائيات تحويلاتك من خلال ملف رسائل فودافون كاش.</p>
-            
-            <button onclick="document.getElementById('smsFile').click()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold text-lg flex justify-center items-center gap-3 hover:scale-[1.02] transition-transform shadow-[0_10px_30px_rgba(255,255,255,0.15)]">
-                مزامنة السجلات الآن <i class="fa-solid fa-bolt text-voda-red"></i>
-            </button>
-            <p class="text-[10px] text-gray-500 font-bold mt-5 flex items-center gap-1.5 justify-center"><i class="fa-solid fa-shield-halved text-gray-600"></i> المعالجة والتشفير يتم على جهازك بالكامل</p>
+            <div class="font-mono font-black text-voda-red text-lg" id="st-fee">0.00</div>
+          </div>
         </div>
-
-        <!-- Dashboard Container -->
-        <div id="dashboardContent" class="hidden flex-1 flex flex-col h-full">
-            
-            <!-- TAB 1: HOME -->
-            <div id="view-home" class="animate-fade-in flex-1">
-                <div class="premium-card rounded-[1.5rem] p-6 mb-6 animate-pop shadow-glow-lg aspect-[1.586] flex flex-col justify-between z-10">
-                    <div class="card-shine"></div>
-                    <div class="relative z-10 flex justify-between items-start">
-                        <i class="fa-solid fa-microchip text-4xl text-[#d4af37] drop-shadow-md"></i>
-                        <i class="fa-solid fa-wifi text-2xl text-white/70 transform rotate-90"></i>
-                    </div>
-                    <div class="relative z-10 mt-auto">
-                        <p class="text-white/60 text-[10px] font-bold mb-1 uppercase tracking-[0.2em]">الرصيد المتاح</p>
-                        <h2 class="text-[2.75rem] leading-none font-black font-numbers text-white drop-shadow-md flex items-baseline gap-1" id="finalBalance">
-                            0<span class="text-2xl text-white/70">.00</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>
-                        </h2>
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="font-numbers text-white/80 tracking-widest text-sm font-bold flex gap-3">
-                                <span>****</span> <span>****</span> <span>****</span> <span class="text-white">VPRO</span>
-                            </div>
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/512px-Vodafone_icon.svg.png" class="w-8 h-8 invert opacity-80 object-contain">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center mb-8 px-2 animate-slide-up delay-100">
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setMainFilter('out')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-up"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">صادر</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('transactions'); setMainFilter('in')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-arrow-down"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">وارد</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="switchTab('contacts')">
-                        <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-white text-lg"><i class="fa-solid fa-users"></i></div>
-                        <span class="text-[10px] font-bold text-gray-400">أشخاص</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 action-btn cursor-pointer" onclick="document.getElementById('smsFile').click()">
-                        <div class="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center text-lg shadow-[0_0_15px_rgba(255,255,255,0.3)]"><i class="fa-solid fa-plus"></i></div>
-                        <span class="text-[10px] font-bold text-white">تحديث</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-5 mb-6 animate-slide-up delay-200">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold text-white">حركة الأموال (Cash Flow)</h3>
-                        <span class="text-[9px] text-gray-400 bg-black/50 px-2 py-1 rounded-md font-numbers border border-white/5" id="parsedCountBadge">0 TXNs</span>
-                    </div>
-                    <div class="progress-bar-bg mb-3">
-                        <div id="inflowBar" class="progress-bar-fill bg-emerald-500 shadow-[0_0_10px_#10b981]" style="width: 0%;"></div>
-                        <div id="outflowBar" class="progress-bar-fill bg-voda-red shadow-[0_0_10px_#E60000]" style="width: 0%;"></div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] text-gray-500 font-bold mb-0.5 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> الدخل (In)</p>
-                            <p class="text-sm font-bold font-numbers text-white" id="totalIn">0.00</p>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-[10px] text-gray-500 font-bold mb-0.5 flex items-center gap-1 justify-end">الإنفاق (Out) <span class="w-2 h-2 rounded-full bg-voda-red"></span></p>
-                            <p class="text-sm font-bold font-numbers text-white" id="totalOut">0.00</p>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 class="text-lg font-black text-white mb-3 px-1 animate-slide-up delay-300">تحليل النفقات</h3>
-                <div class="grid grid-cols-2 gap-3 animate-slide-up delay-300 mb-8">
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-money-bill-wave text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">سحب كاش (ATM)</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statWithdrawals">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-arrow-right-to-city text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">إيداع رصيد</p>
-                        <p class="font-bold font-numbers text-emerald-400 text-lg" id="statDeposits">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-mobile-screen-button text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">شحن وفواتير</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statTelecom">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl relative overflow-hidden group">
-                        <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-8 group-hover:scale-110 transition-transform"><i class="fa-solid fa-globe text-xs"></i></div>
-                        <p class="text-[11px] text-gray-400 font-bold mb-1">مدفوعات أونلاين</p>
-                        <p class="font-bold font-numbers text-white text-lg" id="statOnline">0.00</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl col-span-2 flex justify-between items-center relative overflow-hidden border-voda-red/20 bg-gradient-to-r from-[#1a0000] to-transparent">
-                        <div class="absolute inset-0 bg-voda-red/5"></div>
-                        <div class="relative z-10 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-voda-red/20 flex items-center justify-center text-voda-red"><i class="fa-solid fa-percent"></i></div>
-                            <div>
-                                <p class="text-[12px] text-white font-bold">رسوم فودافون</p>
-                                <p class="text-[9px] text-voda-red/70 mt-0.5">تحويل، سحب، وكروت (VCN)</p>
-                            </div>
-                        </div>
-                        <p class="font-black font-numbers text-voda-red text-xl relative z-10" id="statFees">0.00</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: TRANSACTIONS -->
-            <div id="view-transactions" class="hidden animate-fade-in flex-1 flex flex-col h-full">
-                <div class="flex justify-between items-end mb-5 px-1 shrink-0">
-                    <div>
-                        <h2 class="text-3xl font-black text-white mb-1">سجل العمليات</h2>
-                        <p class="text-xs text-gray-400 font-semibold">تتبع كل قرش تم إنفاقه أو استلامه</p>
-                    </div>
-                </div>
-
-                <!-- Hierarchical Filters -->
-                <div class="flex flex-col gap-2 mb-4 shrink-0 px-1">
-                    <!-- Main Filters -->
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                        <button onclick="setMainFilter('all')" id="main-filter-all" class="main-filter-chip active bg-white text-black px-4 py-2 rounded-xl text-[11px] font-extrabold whitespace-nowrap transition-colors">الكل</button>
-                        <button onclick="setMainFilter('in')" id="main-filter-in" class="main-filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">وارد <i class="fa-solid fa-arrow-down ml-1 text-[10px] text-emerald-400"></i></button>
-                        <button onclick="setMainFilter('out')" id="main-filter-out" class="main-filter-chip glass text-gray-300 px-4 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-colors border border-white/10">صادر <i class="fa-solid fa-arrow-up ml-1 text-[10px] text-voda-red"></i></button>
-                    </div>
-                    
-                    <!-- Sub Filters Container (Dynamically Populated) -->
-                    <div id="sub-filters-container" class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 hidden transition-all">
-                        <!-- Filled by JS -->
-                    </div>
-                </div>
-
-                <div id="allTxList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
-            </div>
-
-            <!-- TAB 3: CONTACTS -->
-            <div id="view-contacts" class="hidden animate-fade-in flex-1 flex flex-col">
-                <div class="flex justify-between items-end mb-5 px-1 shrink-0">
-                    <div>
-                        <h2 class="text-3xl font-black text-white mb-1">الأشخاص</h2>
-                        <p class="text-xs text-gray-400 font-semibold">صافي الحسابات بينك وبين جهات الاتصال</p>
-                    </div>
-                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center font-numbers text-sm text-black font-black shadow-[0_0_15px_rgba(255,255,255,0.2)]" id="peopleCount">0</div>
-                </div>
-                <div class="relative mb-5 shrink-0">
-                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchInput" oninput="filterPeople()" placeholder="ابحث برقم الموبايل أو الاسم..." class="w-full glass-panel py-3.5 pr-12 pl-4 outline-none focus:border-white/30 focus:bg-white/5 rounded-2xl transition-all text-sm text-white placeholder-gray-500 shadow-inner">
-                </div>
-                <div id="peopleList" class="space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-4"></div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- Floating Nav -->
-    <div id="bottomNavWrapper" class="fixed bottom-0 left-0 right-0 z-40 hidden pb-safe-offset flex justify-center pointer-events-none" style="padding-bottom: max(20px, env(safe-area-inset-bottom));">
-        <nav class="floating-dock w-full max-w-[320px] flex justify-between items-center shadow-[0_10px_40px_rgba(0,0,0,0.8)] pointer-events-auto">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-item active flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-wallet text-[22px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-            <button onclick="switchTab('transactions')" id="nav-transactions" class="nav-item flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-clock-rotate-left text-[20px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-            <button onclick="switchTab('contacts')" id="nav-contacts" class="nav-item flex-1 py-3 flex flex-col items-center justify-center">
-                <i class="fa-solid fa-user-group text-[18px]"></i>
-                <div class="nav-indicator"></div>
-            </button>
-        </nav>
-    </div>
-
-    <!-- Modals -->
-    <div id="personModal" onclick="closeModal('personModal')" class="fixed inset-0 bg-black/80 backdrop-blur-sm modal-overlay flex flex-col justify-end z-[70] hidden">
-        <div onclick="event.stopPropagation()" class="glass-panel w-full max-w-md mx-auto p-6 rounded-t-[2.5rem] modal-sheet h-[85vh] flex flex-col border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 shrink-0"></div>
-            <div class="flex justify-between items-start mb-6 shrink-0">
-                <div class="flex items-center gap-4 w-[80%]">
-                    <div class="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white text-xl shadow-lg"><i class="fa-solid fa-user"></i></div>
-                    <div class="overflow-hidden">
-                        <h3 class="text-xl font-black text-white mb-0.5 truncate" id="modalPersonName">الاسم</h3>
-                        <p class="text-sm font-numbers text-gray-400 font-bold" id="modalPersonPhone">01000000000</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeModal('personModal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="bg-[#0a0a0a] rounded-2xl p-5 mb-6 border border-white/5 shrink-0 flex justify-between items-center relative overflow-hidden shadow-inner">
-                <div class="absolute right-0 top-0 w-1.5 h-full bg-voda-red" id="modalNetBar"></div>
-                <div>
-                    <p class="text-[11px] text-gray-500 mb-1 font-bold tracking-wide" id="modalNetLabel">الصافي</p>
-                    <p class="font-black font-numbers text-2xl text-white drop-shadow-md" id="modalNetValue" dir="ltr">0.00</p>
-                </div>
-                <div class="text-left w-1/2">
-                    <p class="text-[10px] font-bold text-emerald-400 mb-2 flex justify-between gap-3 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg border border-emerald-500/10"><span>الوارد:</span> <span class="font-numbers" id="modalTotalIn">0</span></p>
-                    <p class="text-[10px] font-bold text-white flex justify-between gap-3 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5"><span>الصادر:</span> <span class="font-numbers" id="modalTotalOut">0</span></p>
-                </div>
-            </div>
-            <h4 class="text-xs font-bold text-gray-400 mb-3 shrink-0 px-1 uppercase tracking-wider">سجل العمليات مع الشخص</h4>
-            <div id="modalTxList" class="space-y-2.5 overflow-y-auto hide-scrollbar flex-1 pb-safe"></div>
+    <!-- TAB: TRANSACTIONS -->
+    <div id="v-transactions" class="hidden flex-1 flex flex-col anim-fade">
+      <div class="mb-4 shrink-0">
+        <h2 class="text-2xl font-black mb-0.5">سجل العمليات</h2>
+        <p class="text-xs text-gray-500">كل قرش وارد وصادر موثق هنا</p>
+      </div>
+      <!-- Search -->
+      <div class="relative mb-3 shrink-0">
+        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+        <input id="tx-search" oninput="filterTxSearch()" type="text" placeholder="ابحث برقم أو نوع العملية..." class="w-full panel py-3 pr-11 pl-4 rounded-2xl text-sm text-white placeholder-gray-600 outline-none focus:border-white/20 transition">
+      </div>
+      <!-- Filters -->
+      <div class="flex flex-col gap-2 mb-3 shrink-0">
+        <div class="flex gap-2 overflow-x-auto hide-scroll pb-1">
+          <button onclick="setMainFilter('all')"  id="mf-all"  class="chip-btn on">الكل</button>
+          <button onclick="setMainFilter('in')"   id="mf-in"   class="chip-btn off">وارد <i class="fa-solid fa-arrow-down text-emerald-400 text-[9px] mr-1"></i></button>
+          <button onclick="setMainFilter('out')"  id="mf-out"  class="chip-btn off">صادر <i class="fa-solid fa-arrow-up text-voda-red text-[9px] mr-1"></i></button>
         </div>
+        <div id="sf-row" class="hidden flex gap-2 overflow-x-auto hide-scroll pb-1">
+          <!-- populated by JS -->
+        </div>
+      </div>
+      <div id="tx-list" class="flex-1 overflow-y-auto hide-scroll space-y-2.5 pb-safe"></div>
     </div>
 
-    <script>
-        let appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions: [] };
-        let peopleArray =[];
-        
-        // Filter States
-        let currentMainFilter = 'all'; // 'all', 'in', 'out'
-        let currentSubFilter = 'all';
+    <!-- TAB: PEOPLE -->
+    <div id="v-people" class="hidden flex-1 flex flex-col anim-fade">
+      <div class="flex items-end justify-between mb-4 shrink-0">
+        <div>
+          <h2 class="text-2xl font-black mb-0.5">الأشخاص</h2>
+          <p class="text-xs text-gray-500">صافي الحسابات مع جهات الاتصال</p>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-sm font-mono font-black text-black shadow-[0_0_20px_rgba(255,255,255,.15)]" id="ppl-count">0</div>
+      </div>
+      <div class="relative mb-4 shrink-0">
+        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+        <input id="ppl-search" oninput="filterPeople()" type="text" placeholder="ابحث بالاسم أو الرقم..." class="w-full panel py-3 pr-11 pl-4 rounded-2xl text-sm text-white placeholder-gray-600 outline-none focus:border-white/20 transition">
+      </div>
+      <div id="ppl-list" class="flex-1 overflow-y-auto hide-scroll space-y-2.5 pb-safe"></div>
+    </div>
 
-        const formatMoney = (num) => parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const cleanNumber = (str) => str ? parseFloat(str.replace(/,/g, '')) : 0;
-        
-        function showToast(msg, type = 'success') {
-            const t = document.getElementById('toast'), i = document.getElementById('toastIcon');
-            document.getElementById('toastMsg').innerText = msg;
-            i.className = type === 'success' ? 'fa-solid fa-check-circle text-emerald-400 text-lg' : 'fa-solid fa-exclamation-circle text-voda-red text-lg';
-            t.classList.remove('-translate-y-32', 'opacity-0');
-            setTimeout(() => t.classList.add('-translate-y-32', 'opacity-0'), 3500);
-        }
+    <!-- TAB: ANALYTICS -->
+    <div id="v-analytics" class="hidden flex-1 overflow-y-auto hide-scroll anim-fade pb-safe">
+      <div class="mb-5">
+        <h2 class="text-2xl font-black mb-0.5">التحليلات</h2>
+        <p class="text-xs text-gray-500">نظرة عميقة على عاداتك المالية</p>
+      </div>
 
-        function animateValue(obj, start, end, duration, format = false) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const current = start + easeOut * (end - start);
-                if (format) {
-                    let split = formatMoney(current).split('.');
-                    obj.innerHTML = `${split[0]}<span class="text-2xl text-white/70">.${split[1]}</span> <span class="text-sm font-sans font-bold text-voda-red ml-2">EGP</span>`;
-                } else { obj.innerText = formatMoney(current); }
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
+      <!-- Monthly Chart -->
+      <div class="panel rounded-2xl p-5 mb-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-black">النشاط الشهري</h3>
+          <div class="flex items-center gap-3 text-[10px] font-bold text-gray-500">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-emerald-500"></span>وارد</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-voda-red"></span>صادر</span>
+          </div>
+        </div>
+        <div id="monthly-chart" class="h-36 flex items-end gap-1.5 justify-around overflow-x-auto hide-scroll"></div>
+      </div>
 
-        function switchTab(tab) {
-            ['home', 'transactions', 'contacts'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('active');
-            });
-            const view = document.getElementById(`view-${tab}`);
-            view.classList.remove('hidden');
-            view.classList.remove('animate-fade-in');
-            void view.offsetWidth; 
-            view.classList.add('animate-fade-in');
-            document.getElementById(`nav-${tab}`).classList.add('active');
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+      <!-- Category Breakdown -->
+      <div class="panel rounded-2xl p-5 mb-4">
+        <h3 class="text-sm font-black mb-4">توزيع الإنفاق</h3>
+        <div id="cat-breakdown" class="space-y-3.5"></div>
+      </div>
 
-        function setStatus(text, colorClass) {
-            document.getElementById('statusText').innerText = text;
-            document.getElementById('statusDot').className = `w-1.5 h-1.5 rounded-full ${colorClass} shadow-[0_0_8px_currentColor] animate-pulse`;
-        }
+      <!-- Key Metrics -->
+      <div class="panel rounded-2xl p-5 mb-4">
+        <h3 class="text-sm font-black mb-4">أرقام مهمة</h3>
+        <div id="key-metrics" class="space-y-3"></div>
+      </div>
 
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            setTimeout(() => { document.getElementById(id).classList.add('modal-active'); document.body.style.overflow = 'hidden'; }, 10);
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('modal-active');
-            setTimeout(() => { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = ''; }, 400);
-        }
+      <!-- Top Contacts -->
+      <div class="panel rounded-2xl p-5">
+        <h3 class="text-sm font-black mb-4">أكثر جهات التعامل نشاطاً</h3>
+        <div id="top-contacts" class="space-y-3"></div>
+      </div>
+    </div>
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+  </div><!-- /dash -->
+</div><!-- /shell -->
 
-            document.getElementById('loadingScreen').classList.remove('hidden');
-            document.getElementById('loadingScreen').classList.add('flex');
-            setStatus('جاري المعالجة...', 'bg-yellow-400 text-yellow-400');
+<!-- Bottom Nav -->
+<div id="nav-wrapper" class="fixed bottom-0 left-0 right-0 z-40 hidden pb-safe flex justify-center" style="padding-bottom:max(16px,env(safe-area-inset-bottom))">
+  <nav class="nav-dock flex w-full max-w-[340px] mx-4 shadow-[0_8px_32px_rgba(0,0,0,.8)]">
+    <button class="nav-btn active" id="nb-home"        onclick="goTab('home')">        <i class="fa-solid fa-wallet text-xl"></i><div class="nav-dot"></div></button>
+    <button class="nav-btn"        id="nb-transactions" onclick="goTab('transactions')"><i class="fa-solid fa-list-ul text-xl"></i><div class="nav-dot"></div></button>
+    <button class="nav-btn"        id="nb-people"       onclick="goTab('people')">      <i class="fa-solid fa-user-group text-xl"></i><div class="nav-dot"></div></button>
+    <button class="nav-btn"        id="nb-analytics"    onclick="goTab('analytics')">   <i class="fa-solid fa-chart-pie text-xl"></i><div class="nav-dot"></div></button>
+  </nav>
+</div>
 
-            const reader = new FileReader();
-            reader.onload = function(e) { 
-                setTimeout(() => {
-                    parseVodafoneData(e.target.result);
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                    document.getElementById('loadingScreen').classList.remove('flex');
-                }, 800);
-            };
-            reader.readAsText(file);
-            event.target.value = ''; 
-        }
+<!-- Person Modal -->
+<div id="pModal" class="fixed inset-0 z-[80] modal-overlay hidden flex flex-col justify-end" onclick="closeModal()">
+  <div class="modal-sheet w-full max-w-md mx-auto panel rounded-t-[2rem] flex flex-col border-t border-white/8 shadow-[0_-12px_50px_rgba(0,0,0,.6)]" style="height:82vh" onclick="event.stopPropagation()">
+    <div class="w-10 h-1 rounded-full bg-white/15 mx-auto mt-4 mb-5 shrink-0"></div>
+    <div class="px-6 shrink-0">
+      <div class="flex items-start justify-between mb-5">
+        <div class="flex items-center gap-4 flex-1 min-w-0">
+          <div class="w-13 h-13 rounded-full glass flex items-center justify-center text-white text-lg shrink-0" style="width:52px;height:52px">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-lg font-black text-white truncate" id="m-name">—</h3>
+            <p class="text-sm font-mono text-gray-400 mt-0.5" id="m-phone">—</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full glass flex items-center justify-center text-gray-400 shrink-0 ml-3 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <!-- Net summary -->
+      <div class="rounded-2xl p-4 mb-5 flex items-center justify-between relative overflow-hidden" style="background:#0a0a0a;border:1px solid var(--border)">
+        <div class="absolute right-0 top-0 w-1 h-full rounded-r-full" id="m-bar" style="background:var(--red)"></div>
+        <div>
+          <div class="text-[10px] text-gray-500 font-bold mb-1" id="m-label">الصافي</div>
+          <div class="font-mono font-black text-2xl text-white" id="m-net" dir="ltr">0.00</div>
+        </div>
+        <div class="text-right space-y-1.5">
+          <div class="text-[10px] font-bold text-emerald-400 flex justify-between gap-4 bg-emerald-500/8 px-3 py-1.5 rounded-lg"><span>وارد:</span><span class="font-mono" id="m-totIn">0</span></div>
+          <div class="text-[10px] font-bold text-white   flex justify-between gap-4 bg-white/5      px-3 py-1.5 rounded-lg"><span>صادر:</span><span class="font-mono" id="m-totOut">0</span></div>
+        </div>
+      </div>
+      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">سجل العمليات</div>
+    </div>
+    <div id="m-txlist" class="flex-1 overflow-y-auto hide-scroll px-6 space-y-2.5 pb-6"></div>
+  </div>
+</div>
 
-        function parseVodafoneData(text) {
-            if(!text || text.trim() === "") { showToast('الملف فارغ', 'error'); return; }
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let D = resetData();
+let peopleArr = [];
+let mainFilter = 'all', subFilter = 'all';
+let allTxFiltered = [];
 
-            appData = { finalBalance: 0, totalInflow: 0, totalOutflow: 0, withdrawals: 0, deposits: 0, telecom: 0, online: 0, feesPaid: 0, parsedCount: 0, people: {}, allTransactions:[] };
-            const cleanText = text.replace(/[\u200E\u200F\u202A-\u202E\u200B-\u200D\uFEFF]/g, '');
-            const blocks = cleanText.split(/={10,}|-{10,}|\n\s*\n|\r\n\s*\r\n/);
-            
-            let globalFallbackDate = new Date();
+function resetData() {
+  return {
+    balance: 0, inflow: 0, outflow: 0,
+    atm: 0, dep: 0, tel: 0, onl: 0, fees: 0,
+    parsed: 0, wallet: null,
+    people: {}, txns: [],
+    balHist: [],       // [{t,b}] balance over time
+    monthly: {},       // {'YYYY-MM': {in,out}}
+  };
+}
 
-            blocks.forEach(block => {
-                let msg = block.trim();
-                if(msg.length < 10) return;
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = n => parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const clean = s => s ? parseFloat(String(s).replace(/,/g,'')) : 0;
 
-                if (/(لا يمكن إتمام|غير صحيح|الرقم السري المتغير|لا يمكن سحب|تحديثات تقنية|رد مبلغ)/i.test(msg) && !/(تم دفع|شحن|تحويل|استلام|سحب)/.test(msg)) {
-                    return; 
-                }
+function toast(msg, ok=true) {
+  const t=$('toast'); $('toast-ico').className=ok?'fa-solid fa-check-circle text-emerald-400 text-base':'fa-solid fa-triangle-exclamation text-voda-red text-base';
+  $('toast-msg').textContent=msg;
+  t.style.transform='translateX(-50%) translateY(0)'; t.style.opacity='1';
+  setTimeout(()=>{ t.style.transform='translateX(-50%) translateY(-80px)'; t.style.opacity='0'; },3200);
+}
 
-                let dateStr = "غير محدد";
-                let dateObj = new Date(globalFallbackDate.getTime()); 
+function setStatus(txt, ok) {
+  $('s-dot').style.background = ok ? '#10b981' : '#E60000';
+  $('s-dot').style.boxShadow = ok ? '0 0 8px #10b981' : '0 0 8px #E60000';
+  $('s-txt').textContent = txt;
+}
 
-                const headerMatch = msg.match(/on (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/i);
-                const internalDateMatch = msg.match(/تاريخ العملية[:\s]*(\d{2}:\d{2})?\s*(\d{2}-\d{2}-\d{2})?\s*(\d{2}:\d{2})?/i);
+function animNum(el, to, ms=1000, money=false) {
+  let start=null, from=0;
+  const step = ts => {
+    if (!start) start=ts;
+    const p = Math.min((ts-start)/ms,1);
+    const ease = 1-Math.pow(1-p,3);
+    const v = from + ease*(to-from);
+    if (money) {
+      const parts=fmt(v).split('.');
+      el.innerHTML=`${parts[0]}<span style="opacity:.55;font-size:.7em">.${parts[1]}</span>`;
+    } else { el.textContent=fmt(v); }
+    if (p<1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
 
-                if (headerMatch) {
-                    dateStr = headerMatch[1];
-                    dateObj = new Date(dateStr.replace(/-/g, '/'));
-                } else if (internalDateMatch) {
-                    let time = internalDateMatch[1] || internalDateMatch[3] || "00:00";
-                    let datePart = internalDateMatch[2];
-                    if(datePart) {
-                        let parts = datePart.split('-');
-                        let year = parts[0].length === 2 ? "20" + parts[0] : parts[0];
-                        dateStr = `${year}-${parts[1]}-${parts[2]} ${time}`;
-                        let tempDate = new Date(dateStr.replace(/-/g, '/'));
-                        if (!isNaN(tempDate)) dateObj = tempDate;
-                    }
-                }
-                if (!isNaN(dateObj)) globalFallbackDate = dateObj;
+// ─── UPLOAD / DRAG & DROP ────────────────────────────────────────────────────
+function triggerUpload() { $('fileIn').click(); }
+function dragOver(e) { e.preventDefault(); $('dropZone').classList.add('dragging'); }
+function dragLeave()  { $('dropZone').classList.remove('dragging'); }
+function dropFile(e)  { e.preventDefault(); dragLeave(); const f=e.dataTransfer.files[0]; if(f) readFile(f); }
+function handleFile(e){ const f=e.target.files[0]; if(f) readFile(f); e.target.value=''; }
 
-                const balanceMatch = msg.match(/(?:رصيدك الحالي|رصيد حسابك[^\d]*|رصيد محفظتك الحالي|Vodafone Cash balance is|Available Balance:)[:\s]*(?:EGP\s*)?([\d\.,]+)/i);
-                if (balanceMatch) { appData.finalBalance = cleanNumber(balanceMatch[1]); }
+function readFile(file) {
+  const loading=$('loading'); loading.classList.remove('hidden'); loading.classList.add('flex');
+  const r=new FileReader();
+  r.onload = ev => setTimeout(()=>{ parse(ev.target.result); loading.classList.add('hidden'); loading.classList.remove('flex'); }, 700);
+  r.readAsText(file);
+}
 
-                let isProcessed = false;
+// ─── DATE PARSING ────────────────────────────────────────────────────────────
+function parseDate(msg) {
+  let m;
+  // SMS Exporter header: "on YYYY-MM-DD HH:MM"
+  m = msg.match(/\bon\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})/i);
+  if (m) { const d=new Date(`${m[1]}T${m[2]}:00`); if(!isNaN(d)) return {str:`${m[1]} ${m[2]}`,obj:d}; }
 
-                // 1. P2P IN
-                const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?من رقم\s*(\d+)/i);
-                const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|\d+)/i);
-                if (!isProcessed && (p2pInAr || p2pInEn)) {
-                    let amt = cleanNumber(p2pInAr ? p2pInAr[1] : p2pInEn[1]);
-                    let rawPhone = p2pInAr ? p2pInAr[2] : p2pInEn[2];
-                    let phone = rawPhone.replace(/^002/, ''); 
-                    const nameMatch = msg.match(/المسجل بإسم\s*([^؛\r\n]+?)(?:؛|رصيدك|على رقم|$)/i);
-                    let name = nameMatch ? nameMatch[1].trim() : "تحويل داخلي";
+  // English full date: "Apr 16, 2026 2:34:07 PM"
+  m = msg.match(/([A-Za-z]+ \d{1,2},?\s*\d{4}\s+\d{1,2}:\d{2}(?::\d{2})?\s*[AP]M)/i);
+  if (m) { const d=new Date(m[1]); if(!isNaN(d)) return {str:d.toLocaleDateString('ar-EG'),obj:d}; }
 
-                    addPersonTx(phone, name, 'in', amt, dateObj, dateStr, "استلام تحويل");
-                    appData.totalInflow += amt; 
-                    pushGlobalTx('transfer_in', 'in', amt, dateObj, dateStr, `استلام من ${name}`, phone);
-                    isProcessed = true;
-                }
+  // Arabic time-first: "HH:MM YY-MM-DD" (e.g. "15:54 26-04-10")
+  m = msg.match(/تاريخ العملية[:\s]+(\d{2}:\d{2})\s+(\d{2})-(\d{2})-(\d{2})/i);
+  if (m) { const [,time,yy,mm,dd]=m; const d=new Date(`20${yy}-${mm}-${dd}T${time}:00`); if(!isNaN(d)) return {str:`20${yy}-${mm}-${dd} ${time}`,obj:d}; }
 
-                // 2. P2P OUT
-                const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?لرقم\s*(\d+)[\s\S]*?مصاريف الخدمة\s*([\d\.,]+)/i);
-                const p2pOutEn = msg.match(/(?:EGP\s*)?([\d\.,]+)\s*(?:L\.E|EGP)?\s*were successfully transferred to\s*(\d+)[\s\S]*?fee is\s*(?:EGP\s*)?([\d\.,]+)/i);
-                if (!isProcessed && (p2pOutAr || p2pOutEn)) {
-                    let amt = cleanNumber(p2pOutAr ? p2pOutAr[1] : p2pOutEn[1]);
-                    let phone = p2pOutAr ? p2pOutAr[2] : p2pOutEn[2];
-                    let fee = cleanNumber(p2pOutAr ? p2pOutAr[3] : p2pOutEn[3]);
+  // Arabic date-first: "DD-MM-YY HH:MM" (e.g. "18-04-26 11:50")
+  m = msg.match(/تاريخ العملية[\s\u200e\u200f:]*(\d{2})-(\d{2})-(\d{2})\s+(\d{2}:\d{2})/i);
+  if (m) { const [,dd,mm,yy,time]=m; const d=new Date(`20${yy}-${mm}-${dd}T${time}:00`); if(!isNaN(d)) return {str:`20${yy}-${mm}-${dd} ${time}`,obj:d}; }
 
-                    addPersonTx(phone, null, 'out', amt, dateObj, dateStr, "إرسال تحويل");
-                    appData.totalOutflow += amt; 
-                    appData.feesPaid += fee;
-                    pushGlobalTx('transfer_out', 'out', amt, dateObj, dateStr, `تحويل إلى حساب`, phone);
-                    isProcessed = true;
-                }
+  // Trx date: "DD-MM-YY HH:MM"
+  m = msg.match(/[Tt]rx\s*date[:\s]*(\d{2})-(\d{2})-(\d{2})\s+(\d{2}:\d{2})/i);
+  if (m) { const [,dd,mm,yy,time]=m; const d=new Date(`20${yy}-${mm}-${dd}T${time}:00`); if(!isNaN(d)) return {str:`20${yy}-${mm}-${dd} ${time}`,obj:d}; }
 
-                // 3. ONLINE / FAWRY PAYMENTS
-                const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)([^.]+)/i);
-                const vcnIssue = msg.match(/اصدار كارت الدفع[\s\S]*?خصم\s*([\d\.,]+)/i);
-                if (!isProcessed && onlinePay) {
-                    let amt = cleanNumber(onlinePay[1]);
-                    let merchant = onlinePay[2].trim();
-                    appData.totalOutflow += amt; appData.online += amt; 
-                    pushGlobalTx('online', 'out', amt, dateObj, dateStr, `مدفوعات أونلاين/فوري`, merchant);
-                    isProcessed = true;
-                }
-                if (vcnIssue) { appData.feesPaid += cleanNumber(vcnIssue[1]); }
+  // Date only: "DD-MM-YY" with no time
+  m = msg.match(/تاريخ العملية[\s\u200e\u200f:]*(\d{2})-(\d{2})-(\d{2})(?!\s*\d)/i);
+  if (m) { const [,dd,mm,yy]=m; const d=new Date(`20${yy}-${mm}-${dd}T00:00:00`); if(!isNaN(d)) return {str:`20${yy}-${mm}-${dd}`,obj:d}; }
 
-                // 4. TELECOM - RECHARGE SELF
-                const selfRechAr = msg.match(/(?:شحن رصيد موبايلك|تجديد باقة)[\s\S]*?خصم\s*([\d\.,]+)/i);
-                const selfRechEn = msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
-                if (!isProcessed && (selfRechAr || selfRechEn)) {
-                    let amt = cleanNumber(selfRechAr ? selfRechAr[1] : selfRechEn[1]);
-                    appData.totalOutflow += amt; appData.telecom += amt; 
-                    pushGlobalTx('telecom', 'out', amt, dateObj, dateStr, `شحن/تجديد خطك`, 'فودافون');
-                    isProcessed = true;
-                }
+  return null;
+}
 
-                // 5. TELECOM - RECHARGE OTHERS
-                const rechOut = msg.match(/شحن رصيد ب[\s\S]*?إلى رقم\s*(\d+)[\s\S]*?وخصم\s*([\d\.,]+)/i);
-                if (!isProcessed && rechOut) {
-                    let phone = rechOut[1];
-                    let deductedAmt = cleanNumber(rechOut[2]);
-                    addPersonTx(phone, null, 'out', deductedAmt, dateObj, dateStr, "شحن رصيد للغير");
-                    appData.totalOutflow += deductedAmt; appData.telecom += deductedAmt; 
-                    pushGlobalTx('telecom', 'out', deductedAmt, dateObj, dateStr, `شحن لرقم آخر`, phone);
-                    isProcessed = true;
-                }
+function fmtDate(str) {
+  if (!str || str==='—') return '—';
+  const d = new Date(str.replace(/-/g,'/').replace(' ','T'));
+  if (isNaN(d)) return str;
+  const day = d.getDate().toString().padStart(2,'0');
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const hr = d.getHours().toString().padStart(2,'0');
+  const mn = d.getMinutes().toString().padStart(2,'0');
+  return `${day} ${months[d.getMonth()]} · ${hr}:${mn}`;
+}
 
-                // 6. TELECOM - RECEIVED FROM OTHERS
-                const rechIn = msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
-                if (!isProcessed && rechIn) {
-                    let phone = rechIn[1];
-                    let amt = cleanNumber(rechIn[2]);
-                    addPersonTx(phone, null, 'in', amt, dateObj, dateStr, "استلام شحن رصيد");
-                    appData.totalInflow += amt; 
-                    pushGlobalTx('telecom', 'in', amt, dateObj, dateStr, `شحن وارد من`, phone);
-                    isProcessed = true;
-                }
+// ─── MAIN PARSER ─────────────────────────────────────────────────────────────
+function parse(raw) {
+  if (!raw.trim()) { toast('الملف فارغ أو غير صحيح', false); return; }
+  D = resetData();
 
-                // 7. WITHDRAWALS
-                const withdrawal = msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
-                if (!isProcessed && withdrawal) {
-                    let amt = cleanNumber(withdrawal[1]);
-                    appData.totalOutflow += amt; appData.withdrawals += amt; 
-                    pushGlobalTx('withdrawal', 'out', amt, dateObj, dateStr, 'سحب نقدي (ATM/فرع)', 'خصم من المحفظة');
-                    isProcessed = true;
-                }
+  const text = raw.replace(/[\u200E\u200F\u202A-\u202E\u200B-\u200D\uFEFF]/g,'');
+  // Split on dashes separator, equals separator, or double newline
+  const blocks = text.split(/={10,}|-{20,}|\n{2,}|\r\n{2,}/);
 
-                // 8. DEPOSITS & CASHBACKS
-                const deposit = msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
-                if (!isProcessed && deposit) {
-                    let amt = cleanNumber(deposit[1]);
-                    appData.totalInflow += amt; appData.deposits += amt; 
-                    pushGlobalTx('deposit', 'in', amt, dateObj, dateStr, amt <= 10 ? `مكافأة / كاش باك` : `إيداع نقدي`, 'إضافة للرصيد');
-                    isProcessed = true;
-                }
+  let fallback = new Date();
+  let firstDate = null, lastDate = null;
 
-                if (isProcessed) appData.parsedCount++;
-            });
+  blocks.forEach(raw => {
+    const msg = raw.trim();
+    if (msg.length < 12) return;
 
-            if (appData.parsedCount === 0) {
-                showToast('لم يتم العثور على أي عمليات قابلة للتحليل.', 'error'); 
-                setStatus('فشل المزامنة', 'bg-voda-red text-voda-red'); 
-                return;
-            }
+    // Skip OTP/error/promo blocks
+    if (/الرقم السري المتغير|لا يمكن إتمام|غير صحيح|كاش باك|اشتري باقة|تستمتع ب|ليك \d+ جنيه/i.test(msg)
+      && !/تم (تحويل|استلام|شحن|سحب|دفع|إيداع)/i.test(msg)) return;
 
-            peopleArray = Object.values(appData.people).sort((a, b) => (b.totalIn + b.totalOut) - (a.totalIn + a.totalOut));
-            appData.allTransactions.sort((a, b) => b.dateObj - a.dateObj);
-            
-            buildUI();
-        }
+    // Detect wallet number
+    const wm = msg.match(/(?:على رقم محفظتك|Mobile Account Number)\s+(\d{8,})/i);
+    if (wm && !D.wallet) D.wallet = wm[1];
 
-        function addPersonTx(phone, name, type, amt, dateObj, dateStr, desc) {
-            if (!appData.people[phone]) { 
-                appData.people[phone] = { phone: phone, name: name || "جهة اتصال مسجلة", totalIn: 0, totalOut: 0, transactions:[] }; 
-            } else if (name && appData.people[phone].name === "جهة اتصال مسجلة") { 
-                appData.people[phone].name = name; 
-            }
-            appData.people[phone].transactions.push({ type, amount: amt, dateObj, dateStr, desc });
-            if (type === 'in') appData.people[phone].totalIn += amt;
-            if (type === 'out') appData.people[phone].totalOut += amt;
-        }
+    // Parse date
+    const dt = parseDate(msg);
+    let dateObj = dt ? dt.obj : new Date(fallback);
+    let dateStr = dt ? dt.str : '—';
+    if (dt && !isNaN(dt.obj)) { fallback = dt.obj; if(!firstDate||dt.obj<firstDate) firstDate=dt.obj; if(!lastDate||dt.obj>lastDate) lastDate=dt.obj; }
 
-        function pushGlobalTx(category, type, amount, dateObj, dateStr, title, subtitle) {
-            appData.allTransactions.push({ category, type, amount, dateObj, dateStr, title, subtitle });
-        }
+    // Parse balance snapshot
+    const bm = msg.match(/(?:رصيد(?:ك الحالي|حسابك[^:]*الحالي|ك الحالي|محفظتك الحالي)[:\s]*|(?:Vodafone Cash balance is|Available Balance:)\s*)(?:EGP\s*)?([\d\.,]+)/i);
+    if (bm) {
+      const b = clean(bm[1]);
+      D.balance = b;
+      if (!isNaN(dateObj)) D.balHist.push({t:dateObj,b});
+    }
 
-        function buildUI() {
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('dashboardContent').classList.remove('hidden');
-            document.getElementById('bottomNavWrapper').classList.remove('hidden');
-            
-            setStatus('متزامن محلياً', 'bg-emerald-500 text-emerald-400');
-            showToast('تمت المزامنة وتحليل البيانات بنجاح!');
+    // Month key
+    const mk = !isNaN(dateObj) ? dateObj.toISOString().slice(0,7) : null;
+    if (mk && !D.monthly[mk]) D.monthly[mk]={in:0,out:0};
 
-            animateValue(document.getElementById('finalBalance'), 0, appData.finalBalance, 1200, true);
-            animateValue(document.getElementById('totalIn'), 0, appData.totalInflow, 1000);
-            animateValue(document.getElementById('totalOut'), 0, appData.totalOutflow, 1000);
-            animateValue(document.getElementById('statWithdrawals'), 0, appData.withdrawals, 800);
-            animateValue(document.getElementById('statDeposits'), 0, appData.deposits, 800);
-            animateValue(document.getElementById('statTelecom'), 0, appData.telecom, 800);
-            animateValue(document.getElementById('statOnline'), 0, appData.online, 800);
-            animateValue(document.getElementById('statFees'), 0, Math.max(0, appData.feesPaid), 800);
-            
-            document.getElementById('parsedCountBadge').innerText = `${appData.parsedCount} عمليات`;
+    let processed = false;
 
-            let totalFlow = appData.totalInflow + appData.totalOutflow;
-            let inPct = totalFlow === 0 ? 50 : (appData.totalInflow / totalFlow) * 100;
-            let outPct = totalFlow === 0 ? 50 : (appData.totalOutflow / totalFlow) * 100;
-            setTimeout(() => {
-                document.getElementById('inflowBar').style.width = `${inPct}%`;
-                document.getElementById('outflowBar').style.width = `${outPct}%`;
-            }, 300);
+    // 1. P2P IN Arabic
+    const p2pInAr = msg.match(/استلام مبلغ\s*([\d\.,]+)\s*جني[هة]?[\s\S]*?من رقم\s*(\d+)/i);
+    const p2pInEn = msg.match(/Received EGP\s*([\d\.,]+)\s*from\s*(002\d+|0\d{9,}|\d{9,})/i);
+    if (!processed && (p2pInAr||p2pInEn)) {
+      const amt=clean(p2pInAr?p2pInAr[1]:p2pInEn[1]);
+      let phone=(p2pInAr?p2pInAr[2]:p2pInEn[2]).replace(/^002/,'');
+      const nm=msg.match(/المسجل بإسم\s*([^\u061B\r\n؛]+?)(?:؛|رصيد|على رقم|$)/i);
+      const name=nm?nm[1].trim():null;
+      addPerson(phone,name,'in',amt,dateObj,dateStr,'استلام تحويل');
+      D.inflow+=amt; addTx('transfer_in','in',amt,dateObj,dateStr,`استلام من ${name||phone}`,phone); if(mk)D.monthly[mk].in+=amt;
+      processed=true;
+    }
 
-            renderPeopleList(peopleArray);
-            
-            // Trigger Main Filter to "All"
-            setMainFilter('all');
-        }
+    // 2. P2P OUT Arabic
+    const p2pOutAr = msg.match(/تم تحويل\s*([\d\.,]+)\s*جني[هة]?\s*لرقم\s*(\d+)[\s\S]*?مصاريف الخدمة\s*([\d\.,]+)/i);
+    const p2pOutEn = msg.match(/EGP\s*([\d\.,]+)\s*were successfully transferred to\s*(\d+)[\s\S]*?fee is\s*EGP\s*([\d\.,]+)/i);
+    if (!processed && (p2pOutAr||p2pOutEn)) {
+      const amt=clean(p2pOutAr?p2pOutAr[1]:p2pOutEn[1]);
+      const phone=p2pOutAr?p2pOutAr[2]:p2pOutEn[2];
+      const fee=clean(p2pOutAr?p2pOutAr[3]:p2pOutEn[3]);
+      addPerson(phone,null,'out',amt,dateObj,dateStr,'إرسال تحويل');
+      D.outflow+=amt; D.fees+=fee; addTx('transfer_out','out',amt,dateObj,dateStr,`تحويل إلى حساب`,phone); if(mk)D.monthly[mk].out+=amt;
+      processed=true;
+    }
 
-        // --- HIERARCHICAL FILTER LOGIC ---
-        function setMainFilter(type) {
-            currentMainFilter = type;
-            currentSubFilter = 'all'; // Reset sub-filter
+    // 3. ONLINE / FAWRY
+    const onlinePay = msg.match(/تم دفع(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]?\s*(?:لـ|ل)(.+?)(?:\.|رصيد|تاريخ)/i);
+    if (!processed && onlinePay) {
+      const amt=clean(onlinePay[1]), merch=onlinePay[2].trim().substring(0,30);
+      D.outflow+=amt; D.onl+=amt; addTx('online','out',amt,dateObj,dateStr,`دفع: ${merch}`,merch); if(mk)D.monthly[mk].out+=amt;
+      processed=true;
+    }
+    // VCN fee
+    const vcn=msg.match(/إصدار كارت[\s\S]*?خصم\s*([\d\.,]+)/i); if(vcn) D.fees+=clean(vcn[1]);
 
-            // Update UI for Main Chips
-            document.querySelectorAll('.main-filter-chip').forEach(btn => {
-                btn.classList.remove('active', 'bg-white', 'text-black', 'border-transparent');
-                btn.classList.add('glass', 'text-gray-300', 'border-white/10');
-            });
-            const activeMain = document.getElementById(`main-filter-${type}`);
-            if(activeMain) {
-                activeMain.classList.add('active', 'bg-white', 'text-black', 'border-transparent');
-                activeMain.classList.remove('glass', 'text-gray-300', 'border-white/10');
-            }
+    // 4. SELF RECHARGE
+    const srAr=msg.match(/شحن رصيد موبايلك ب\s*([\d\.,]+)/i);
+    const srEn=msg.match(/([\d\.,]+)\s*(?:L\.E|EGP)\s*was successfully recharged to your mobile/i);
+    if (!processed && (srAr||srEn)) {
+      const amt=clean(srAr?srAr[1]:srEn[1]);
+      D.outflow+=amt; D.tel+=amt; addTx('telecom','out',amt,dateObj,dateStr,'شحن خطك','فودافون'); if(mk)D.monthly[mk].out+=amt;
+      processed=true;
+    }
 
-            renderSubFilters();
-            renderAllTransactions();
-        }
+    // 5. RECHARGE OTHERS
+    const rechO=msg.match(/شحن رصيد ب\s*([\d\.,]+)\s*ج\s*بنجاح إلى رقم\s*(\d+)[\s\S]*?وخصم\s*([\d\.,]+)/i);
+    if (!processed && rechO) {
+      const deducted=clean(rechO[3]), phone=rechO[2];
+      addPerson(phone,null,'out',deducted,dateObj,dateStr,'شحن رصيد للغير');
+      D.outflow+=deducted; D.tel+=deducted; addTx('telecom','out',deducted,dateObj,dateStr,'شحن رقم آخر',phone); if(mk)D.monthly[mk].out+=deducted;
+      processed=true;
+    }
 
-        function renderSubFilters() {
-            const container = document.getElementById('sub-filters-container');
-            
-            if (currentMainFilter === 'all') {
-                container.classList.add('hidden');
-                return;
-            }
+    // 6. RECEIVED RECHARGE
+    const rechI=msg.match(/رقم\s*(\d+)\s*شحنلك ب\s*([\d\.,]+)/i);
+    if (!processed && rechI) {
+      const amt=clean(rechI[2]), phone=rechI[1];
+      addPerson(phone,null,'in',amt,dateObj,dateStr,'استلام شحن');
+      D.inflow+=amt; addTx('telecom','in',amt,dateObj,dateStr,'شحن وارد',phone); if(mk)D.monthly[mk].in+=amt;
+      processed=true;
+    }
 
-            container.classList.remove('hidden');
-            let html = `<button onclick="setSubFilter('all')" id="sub-filter-all" class="sub-filter-chip active bg-white/20 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/10">الكل</button>`;
+    // 7. ATM WITHDRAWAL
+    const atm=msg.match(/تم سحب(?: مبلغ)?\s*([\d\.,]+)\s*جني[هة]/i);
+    if (!processed && atm) {
+      const amt=clean(atm[1]);
+      D.outflow+=amt; D.atm+=amt; addTx('withdrawal','out',amt,dateObj,dateStr,'سحب نقدي (ATM)','من المحفظة'); if(mk)D.monthly[mk].out+=amt;
+      processed=true;
+    }
 
-            if (currentMainFilter === 'out') {
-                html += `
-                    <button onclick="setSubFilter('transfer_out')" id="sub-filter-transfer_out" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">تحويلات</button>
-                    <button onclick="setSubFilter('telecom_out')" id="sub-filter-telecom_out" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">شحن وفواتير</button>
-                    <button onclick="setSubFilter('online')" id="sub-filter-online" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">دفع أونلاين</button>
-                    <button onclick="setSubFilter('withdrawal')" id="sub-filter-withdrawal" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">سحب كاش</button>
-                `;
-            } else if (currentMainFilter === 'in') {
-                html += `
-                    <button onclick="setSubFilter('transfer_in')" id="sub-filter-transfer_in" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">تحويلات واردة</button>
-                    <button onclick="setSubFilter('telecom_in')" id="sub-filter-telecom_in" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">شحن وارد</button>
-                    <button onclick="setSubFilter('deposit')" id="sub-filter-deposit" class="sub-filter-chip bg-black/50 text-gray-400 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors border border-white/5">إيداعات</button>
-                `;
-            }
-            container.innerHTML = html;
-        }
+    // 8. DEPOSIT
+    const dep=msg.match(/تم إيداع\s*([\d\.,]+)\s*جني[هة]/i);
+    if (!processed && dep) {
+      const amt=clean(dep[1]);
+      D.inflow+=amt; D.dep+=amt; addTx('deposit','in',amt,dateObj,dateStr,amt<=10?'مكافأة / كاش باك':'إيداع نقدي','إضافة للرصيد'); if(mk)D.monthly[mk].in+=amt;
+      processed=true;
+    }
 
-        function setSubFilter(cat) {
-            currentSubFilter = cat;
-            document.querySelectorAll('.sub-filter-chip').forEach(btn => {
-                btn.classList.remove('active', 'bg-white/20', 'text-white', 'border-white/10');
-                btn.classList.add('bg-black/50', 'text-gray-400', 'border-white/5');
-            });
-            const activeBtn = document.getElementById(`sub-filter-${cat}`);
-            if(activeBtn) {
-                activeBtn.classList.remove('bg-black/50', 'text-gray-400', 'border-white/5');
-                activeBtn.classList.add('active', 'bg-white/20', 'text-white', 'border-white/10');
-            }
-            renderAllTransactions();
-        }
+    if (processed) D.parsed++;
+  });
 
-        function renderAllTransactions() {
-            const list = document.getElementById('allTxList');
-            
-            const filtered = appData.allTransactions.filter(tx => {
-                // 1. Check Main Filter (In/Out)
-                if (currentMainFilter === 'in' && tx.type !== 'in') return false;
-                if (currentMainFilter === 'out' && tx.type !== 'out') return false;
+  if (D.parsed === 0) { toast('لم يُعثر على عمليات قابلة للتحليل', false); setStatus('فشل المعالجة',false); return; }
 
-                // 2. Check Sub Filter
-                if (currentSubFilter === 'all') return true;
-                
-                // Handle specific sub-filters mapping
-                if (currentSubFilter === 'telecom_out') return tx.category === 'telecom' && tx.type === 'out';
-                if (currentSubFilter === 'telecom_in') return tx.category === 'telecom' && tx.type === 'in';
-                
-                return tx.category === currentSubFilter;
-            });
+  D.txns.sort((a,b)=>b.dateObj-a.dateObj);
+  D.balHist.sort((a,b)=>a.t-b.t);
+  peopleArr = Object.values(D.people).sort((a,b)=>(b.totalIn+b.totalOut)-(a.totalIn+a.totalOut));
 
-            if (filtered.length === 0) {
-                list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-receipt text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد عمليات مسجلة هنا.</p></div>`;
-                return;
-            }
+  // Card period display
+  if (firstDate && lastDate) {
+    const f=firstDate,l=lastDate;
+    const pad=n=>String(n).padStart(2,'0');
+    $('c-period').textContent=`${pad(f.getMonth()+1)}/${String(f.getFullYear()).slice(2)} — ${pad(l.getMonth()+1)}/${String(l.getFullYear()).slice(2)}`;
+  }
 
-            list.innerHTML = filtered.map((tx, idx) => {
-                const isInc = tx.type === 'in';
-                const col = isInc ? 'text-emerald-400' : 'text-white';
-                const sign = isInc ? '+' : '-';
-                
-                let icon = '', bgIcon = '';
-                switch(tx.category) {
-                    case 'transfer_in': icon = 'fa-arrow-down'; bgIcon = 'bg-emerald-500/10 text-emerald-400'; break;
-                    case 'transfer_out': icon = 'fa-arrow-up'; bgIcon = 'bg-white/10 text-white'; break;
-                    case 'withdrawal': icon = 'fa-money-bill-wave'; bgIcon = 'bg-gray-800 text-gray-300'; break;
-                    case 'deposit': icon = 'fa-arrow-right-to-city'; bgIcon = 'bg-emerald-500/10 text-emerald-400'; break;
-                    case 'telecom': icon = 'fa-mobile-screen'; bgIcon = 'bg-blue-500/10 text-blue-400'; break;
-                    case 'online': icon = 'fa-globe'; bgIcon = 'bg-purple-500/10 text-purple-400'; break;
-                    default: icon = 'fa-receipt'; bgIcon = 'bg-gray-800 text-gray-300';
-                }
+  buildUI(firstDate, lastDate);
+  toast(`تم تحليل ${D.parsed} عملية بنجاح`);
+}
 
-                const d = tx.dateStr.split(' ');
-                const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
-                const delay = Math.min(idx * 20, 400);
+function addPerson(phone,name,type,amt,dateObj,dateStr,desc) {
+  if (!D.people[phone]) D.people[phone]={phone,name:name||'جهة اتصال',totalIn:0,totalOut:0,txns:[]};
+  else if (name && D.people[phone].name==='جهة اتصال') D.people[phone].name=name;
+  D.people[phone].txns.push({type,amount:amt,dateObj,dateStr,desc});
+  if (type==='in') D.people[phone].totalIn+=amt;
+  else              D.people[phone].totalOut+=amt;
+}
 
-                return `
-                <div class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 hover:bg-white/5 transition-colors animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
-                    <div class="flex items-center gap-3.5 w-[70%]">
-                        <div class="w-11 h-11 rounded-full ${bgIcon} flex items-center justify-center shrink-0 border border-white/5"><i class="fa-solid ${icon} text-[15px]"></i></div>
-                        <div class="truncate">
-                            <p class="font-extrabold text-[13px] text-white truncate tracking-wide">${tx.title}</p>
-                            <p class="text-[11px] text-gray-400 mt-0.5 truncate font-numbers">${tx.subtitle} <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${displayDate}</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end shrink-0">
-                        <p class="font-bold font-numbers ${col} text-[15px]" dir="ltr">${sign}${formatMoney(tx.amount)}</p>
-                    </div>
-                </div>`;
-            }).join('');
-        }
+function addTx(cat,type,amount,dateObj,dateStr,title,subtitle) {
+  D.txns.push({cat,type,amount,dateObj,dateStr,title,subtitle});
+}
 
-        function renderPeopleList(arr) {
-            const list = document.getElementById('peopleList');
-            document.getElementById('peopleCount').innerText = arr.length;
+// ─── BUILD UI ────────────────────────────────────────────────────────────────
+function buildUI(firstDate, lastDate) {
+  $('empty').classList.add('hidden');
+  $('dash').classList.remove('hidden');
+  $('nav-wrapper').classList.remove('hidden');
 
-            if (arr.length === 0) { list.innerHTML = `<div class="text-center py-12 glass-panel rounded-3xl mx-1"><i class="fa-solid fa-address-book text-4xl text-gray-700 mb-4"></i><p class="text-gray-400 text-sm">لا توجد جهات اتصال مسجلة.</p></div>`; return; }
+  setStatus(`${D.parsed} عملية`,true);
 
-            list.innerHTML = arr.map((p, idx) => {
-                let net = p.totalIn - p.totalOut;
-                let isPos = net >= 0;
-                let color = isPos ? 'text-emerald-400' : 'text-white';
-                let sign = isPos ? '+' : '';
-                const delay = Math.min(idx * 20, 400);
+  // Card
+  if (D.wallet) $('c-wallet').textContent = D.wallet.replace(/(\d{4})(\d{4})(\d+)/,'$1 $2 $3');
+  animNum($('c-balance'), D.balance, 1200, true);
 
-                return `
-                <div onclick="openPerson('${p.phone}')" class="glass-panel p-4 rounded-[1.25rem] flex justify-between items-center mx-1 cursor-pointer hover:bg-white/5 transition-all active:scale-[0.98] animate-slide-up" style="animation-delay: ${delay}ms; opacity: 0; animation-fill-mode: forwards;">
-                    <div class="flex items-center gap-4 w-[65%]">
-                        <div class="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/5 flex items-center justify-center text-gray-400 shadow-inner"><i class="fa-solid fa-user"></i></div>
-                        <div class="truncate"><p class="font-extrabold text-[14px] truncate text-white tracking-wide">${p.name}</p><p class="text-[11px] font-numbers text-gray-500 mt-1 tracking-widest">${p.phone}</p></div>
-                    </div>
-                    <div class="flex flex-col items-end shrink-0">
-                        <p class="text-[9px] text-gray-500 font-bold mb-1 uppercase tracking-wider">الصافي</p>
-                        <p class="font-bold font-numbers ${color} text-[15px]" dir="ltr">${sign}${formatMoney(net)}</p>
-                    </div>
-                </div>`;
-            }).join('');
-        }
+  // Home stats
+  animNum($('h-in'),  D.inflow,  900);
+  animNum($('h-out'), D.outflow, 900);
+  animNum($('st-atm'), D.atm, 800);
+  animNum($('st-dep'), D.dep, 800);
+  animNum($('st-tel'), D.tel, 800);
+  animNum($('st-onl'), D.onl, 800);
+  animNum($('st-fee'), D.fees, 800);
+  $('tx-count').textContent = `${D.parsed} عملية`;
 
-        function filterPeople() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderPeopleList(peopleArray.filter(p => p.name.toLowerCase().includes(q) || p.phone.includes(q)));
-        }
+  // Cashflow bars
+  const tot = D.inflow + D.outflow || 1;
+  setTimeout(()=>{
+    $('bar-in').style.width  = `${(D.inflow/tot*100)}%`;
+    $('bar-out').style.width = `${(D.outflow/tot*100)}%`;
+  }, 300);
 
-        function openPerson(phone) {
-            const p = appData.people[phone];
-            if (!p) return;
+  // Sparkline
+  renderSparkline();
 
-            document.getElementById('modalPersonName').innerText = p.name;
-            document.getElementById('modalPersonPhone').innerText = p.phone;
-            
-            let net = p.totalIn - p.totalOut;
-            let isPos = net >= 0;
-            
-            const netValEl = document.getElementById('modalNetValue');
-            netValEl.innerText = (isPos ? '+' : '') + formatMoney(net);
-            netValEl.className = `font-black font-numbers text-3xl drop-shadow-md ${isPos ? 'text-emerald-400' : 'text-white'}`;
-            
-            document.getElementById('modalNetBar').className = `absolute right-0 top-0 w-1.5 h-full ${isPos ? 'bg-emerald-500 shadow-[0_0_15px_#10b981]' : 'bg-voda-red shadow-[0_0_15px_#E60000]'}`;
-            document.getElementById('modalNetLabel').innerText = isPos ? 'المتبقي لك' : 'المتبقي عليك';
-            document.getElementById('modalTotalIn').innerText = formatMoney(p.totalIn);
-            document.getElementById('modalTotalOut').innerText = formatMoney(p.totalOut);
+  // Lists
+  allTxFiltered = [...D.txns];
+  renderTxList(allTxFiltered);
+  renderPeopleList(peopleArr);
+  renderAnalytics();
+  $('ppl-count').textContent = peopleArr.length;
+}
 
-            const sorted =[...p.transactions].sort((a, b) => b.dateObj - a.dateObj);
-            document.getElementById('modalTxList').innerHTML = sorted.map(tx => {
-                const isInc = tx.type === 'in';
-                const col = isInc ? 'text-emerald-400' : 'text-white';
-                const bgIcon = isInc ? 'bg-emerald-500/10 text-emerald-400' : 'bg-white/10 text-white';
-                
-                const d = tx.dateStr.split(' ');
-                const displayDate = d.length > 1 ? `<span class="text-gray-500">${d[0]}</span> <span class="mx-1 text-[8px] opacity-30 text-gray-600">•</span> ${d[1]}` : tx.dateStr;
+// ─── SPARKLINE ───────────────────────────────────────────────────────────────
+function renderSparkline() {
+  const hist = D.balHist;
+  if (hist.length < 2) { $('sparkSection').classList.add('hidden'); return; }
+  $('sparkSection').classList.remove('hidden');
+  const vals = hist.map(h=>h.b);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const range = max-min||1;
+  const W=300, H=60, PAD=4;
 
-                return `
-                <div class="bg-[#141414] p-3.5 rounded-xl flex justify-between items-center border border-white/5">
-                    <div class="flex items-center gap-3.5 w-[75%]">
-                        <div class="w-9 h-9 rounded-full ${bgIcon} flex items-center justify-center shrink-0 border border-white/5"><i class="fa-solid ${isInc ? 'fa-arrow-down' : 'fa-arrow-up'} text-[11px]"></i></div>
-                        <div class="truncate"><p class="font-extrabold text-[12px] text-white truncate">${tx.desc}</p><p class="text-[10px] font-numbers text-gray-500 mt-1">${displayDate}</p></div>
-                    </div>
-                    <p class="font-bold font-numbers ${col} text-[14px] shrink-0" dir="ltr">${isInc ? '+' : '-'}${formatMoney(tx.amount)}</p>
-                </div>`;
-            }).join('');
-            openModal('personModal');
-        }
-    </script>
+  const pts = hist.map((h,i) => {
+    const x = PAD + (i/(hist.length-1))*(W-PAD*2);
+    const y = PAD + (1-(h.b-min)/range)*(H-PAD*2);
+    return [x,y];
+  });
+  const pathD = pts.map((p,i)=>i===0?`M${p[0]},${p[1]}`:`L${p[0]},${p[1]}`).join(' ');
+  const areaD = `M${PAD},${H} ${pts.map(p=>`L${p[0]},${p[1]}`).join(' ')} L${W-PAD},${H} Z`;
+
+  $('sparkContainer').innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" class="w-full h-full" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#E60000" stop-opacity=".7"/>
+          <stop offset="100%" stop-color="#ff5555" stop-opacity=".9"/>
+        </linearGradient>
+        <linearGradient id="sag" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#E60000" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#E60000" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path class="spark-area" d="${areaD}"/>
+      <path class="spark-path" d="${pathD}"/>
+      <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="3" fill="#ff5555"/>
+    </svg>`;
+
+  const f=hist[0].t, l=hist[hist.length-1].t;
+  const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  $('spark-range').textContent = `${f.getDate()} ${months[f.getMonth()]} — ${l.getDate()} ${months[l.getMonth()]}`;
+}
+
+// ─── ANALYTICS ───────────────────────────────────────────────────────────────
+function renderAnalytics() {
+  // Monthly chart
+  const months = Object.keys(D.monthly).sort();
+  if (months.length > 0) {
+    const allVals = months.flatMap(m=>[D.monthly[m].in, D.monthly[m].out]);
+    const maxV = Math.max(...allVals, 1);
+    const monthNames = {
+      '01':'يناير','02':'فبراير','03':'مارس','04':'أبريل','05':'مايو','06':'يونيو',
+      '07':'يوليو','08':'أغسطس','09':'سبتمبر','10':'أكتوبر','11':'نوفمبر','12':'ديسمبر'
+    };
+    const cols = months.map((mk,i) => {
+      const {in:inc,out:outc}=D.monthly[mk];
+      const inH=Math.max((inc/maxV)*100,2), outH=Math.max((outc/maxV)*100,2);
+      const label=monthNames[mk.slice(5)]||mk.slice(5);
+      return `<div class="flex flex-col items-center gap-0.5 flex-1 min-w-[32px]" style="animation-delay:${i*60}ms">
+        <div class="w-full flex gap-0.5 items-end" style="height:100px">
+          <div class="bar-col flex-1 rounded-t-sm bg-emerald-500/60 hover:bg-emerald-400/80 transition cursor-default" style="height:${inH}%;animation-delay:${i*60}ms" title="وارد: ${fmt(inc)}"></div>
+          <div class="bar-col flex-1 rounded-t-sm bg-voda-red/60 hover:bg-voda-red/90 transition cursor-default" style="height:${outH}%;animation-delay:${i*60+30}ms" title="صادر: ${fmt(outc)}"></div>
+        </div>
+        <div class="text-[8px] text-gray-600 text-center leading-tight">${label}</div>
+      </div>`;
+    }).join('');
+    $('monthly-chart').innerHTML = `<div class="flex items-end gap-1.5 w-full" style="height:110px">${cols}</div>`;
+  }
+
+  // Category breakdown
+  const cats = [
+    {label:'تحويلات صادرة', val: D.txns.filter(t=>t.cat==='transfer_out').reduce((s,t)=>s+t.amount,0), color:'#fff',icon:'fa-arrow-up'},
+    {label:'شحن وفواتير',    val: D.tel, color:'#60a5fa', icon:'fa-mobile-screen'},
+    {label:'سحب ATM',         val: D.atm, color:'#9ca3af', icon:'fa-money-bill'},
+    {label:'مدفوعات أونلاين', val: D.onl, color:'#c084fc', icon:'fa-globe'},
+    {label:'إيداعات',         val: D.dep, color:'#34d399', icon:'fa-circle-arrow-down'},
+  ].filter(c=>c.val>0);
+  const totCat = cats.reduce((s,c)=>s+c.val,0)||1;
+  $('cat-breakdown').innerHTML = cats.map(c=>{
+    const pct = Math.round(c.val/totCat*100);
+    return `<div>
+      <div class="flex justify-between items-center mb-1.5">
+        <span class="text-[11px] font-bold text-gray-300 flex items-center gap-2"><i class="fa-solid ${c.icon} text-[10px]" style="color:${c.color}"></i>${c.label}</span>
+        <span class="text-[11px] font-mono text-gray-400">${pct}% · <span style="color:${c.color}">${fmt(c.val)}</span></span>
+      </div>
+      <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${c.color};box-shadow:0 0 6px ${c.color}66"></div></div>
+    </div>`;
+  }).join('');
+
+  // Key metrics
+  const allAmts = D.txns.map(t=>t.amount);
+  const avgAmt = allAmts.length ? allAmts.reduce((s,a)=>s+a,0)/allAmts.length : 0;
+  const maxAmt = allAmts.length ? Math.max(...allAmts) : 0;
+  const outCount = D.txns.filter(t=>t.type==='out').length;
+  const inCount  = D.txns.filter(t=>t.type==='in').length;
+  const metrics = [
+    {label:'متوسط العملية',    val:fmt(avgAmt)+' جنيه', icon:'fa-chart-bar',     color:'#c084fc'},
+    {label:'أكبر عملية',        val:fmt(maxAmt)+' جنيه', icon:'fa-trophy',         color:'#facc15'},
+    {label:'عمليات صادرة',     val:`${outCount} عملية`,  icon:'fa-arrow-up',       color:'#f87171'},
+    {label:'عمليات واردة',     val:`${inCount} عملية`,   icon:'fa-arrow-down',     color:'#34d399'},
+    {label:'رصيد جهات الاتصال', val:`${peopleArr.length} شخص`,icon:'fa-users',     color:'#60a5fa'},
+  ];
+  $('key-metrics').innerHTML = metrics.map(m=>
+    `<div class="flex items-center justify-between py-1">
+      <span class="text-[11px] text-gray-400 flex items-center gap-2.5"><i class="fa-solid ${m.icon} w-4 text-center" style="color:${m.color}"></i>${m.label}</span>
+      <span class="font-mono text-[12px] font-bold text-white">${m.val}</span>
+    </div>`
+  ).join('<div class="border-b border-white/5"></div>');
+
+  // Top contacts
+  const top5 = [...peopleArr].sort((a,b)=>(b.totalIn+b.totalOut)-(a.totalIn+a.totalOut)).slice(0,5);
+  const maxVol = top5[0] ? top5[0].totalIn+top5[0].totalOut : 1;
+  $('top-contacts').innerHTML = top5.map((p,i)=>{
+    const vol=p.totalIn+p.totalOut;
+    const pct=Math.round(vol/maxVol*100);
+    return `<div onclick="openPerson('${p.phone}')" class="cursor-pointer hover:bg-white/5 transition rounded-xl p-2 -mx-2">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[11px] font-bold text-white flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-mono font-bold text-gray-400">${i+1}</span>
+          ${p.name}
+        </span>
+        <span class="font-mono text-[11px] text-gray-400">${fmt(vol)} ج</span>
+      </div>
+      <div class="prog"><div class="prog-fill bg-white/30" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TRANSACTION LIST ─────────────────────────────────────────────────────────
+const catMeta = {
+  transfer_in:  {icon:'fa-arrow-down',     bg:'rgba(16,185,129,.1)',  color:'#34d399'},
+  transfer_out: {icon:'fa-arrow-up',       bg:'rgba(255,255,255,.06)',color:'#fff'},
+  withdrawal:   {icon:'fa-money-bill-wave',bg:'rgba(156,163,175,.08)',color:'#9ca3af'},
+  deposit:      {icon:'fa-circle-arrow-down',bg:'rgba(16,185,129,.1)',color:'#34d399'},
+  telecom:      {icon:'fa-mobile-screen',  bg:'rgba(96,165,250,.1)',  color:'#60a5fa'},
+  online:       {icon:'fa-globe',          bg:'rgba(192,132,252,.1)', color:'#c084fc'},
+};
+
+function renderTxList(txns) {
+  const el=$('tx-list');
+  if (!txns.length) { el.innerHTML=`<div class="text-center py-12 panel rounded-3xl"><i class="fa-solid fa-receipt text-4xl text-gray-700 mb-3 block"></i><p class="text-gray-500 text-sm">لا توجد عمليات مطابقة</p></div>`; return; }
+  el.innerHTML = txns.map((tx,i)=>{
+    const m = catMeta[tx.cat]||catMeta.telecom;
+    const isIn = tx.type==='in';
+    const delay = Math.min(i*18,400);
+    return `<div class="panel rounded-2xl p-4 flex items-center gap-3.5 hover:bg-white/5 transition anim-up" style="animation-delay:${delay}ms">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-white/5" style="background:${m.bg}">
+        <i class="fa-solid ${m.icon} text-sm" style="color:${m.color}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-bold text-[13px] text-white truncate">${tx.title}</div>
+        <div class="text-[10px] text-gray-500 mt-0.5 font-mono truncate">${tx.subtitle} · ${fmtDate(tx.dateStr)}</div>
+      </div>
+      <div class="font-mono font-bold text-[14px] shrink-0 ${isIn?'text-emerald-400':'text-white'}" dir="ltr">${isIn?'+':'-'}${fmt(tx.amount)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────────────────────
+function setMainFilter(type) {
+  mainFilter=type; subFilter='all';
+  ['all','in','out'].forEach(f=>{
+    const b=$(`mf-${f}`);
+    b.className=`chip-btn ${f===type?'on':'off'}`;
+  });
+  renderSubFilters();
+  applyFilters();
+}
+
+function renderSubFilters() {
+  const row=$('sf-row');
+  if (mainFilter==='all') { row.classList.add('hidden'); return; }
+  row.classList.remove('hidden');
+  const defs = mainFilter==='out'
+    ? [{id:'all',label:'الكل'},{id:'transfer_out',label:'تحويلات'},{id:'telecom_out',label:'شحن وفواتير'},{id:'online',label:'أونلاين'},{id:'withdrawal',label:'ATM'}]
+    : [{id:'all',label:'الكل'},{id:'transfer_in',label:'تحويلات واردة'},{id:'telecom_in',label:'شحن وارد'},{id:'deposit',label:'إيداعات'}];
+  row.innerHTML = defs.map(d=>`<button onclick="setSubFilter('${d.id}')" id="sf-${d.id}" class="chip-btn ${d.id===subFilter?'on':'off'}">${d.label}</button>`).join('');
+}
+
+function setSubFilter(cat) {
+  subFilter=cat;
+  document.querySelectorAll('[id^="sf-"]').forEach(b=>b.className=`chip-btn ${b.id===`sf-${cat}`?'on':'off'}`);
+  applyFilters();
+}
+
+function filterTxSearch() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const q=$('tx-search').value.toLowerCase();
+  let filtered = D.txns.filter(tx=>{
+    if (mainFilter==='in'&&tx.type!=='in') return false;
+    if (mainFilter==='out'&&tx.type!=='out') return false;
+    if (subFilter!=='all') {
+      if (subFilter==='telecom_out') return tx.cat==='telecom'&&tx.type==='out';
+      if (subFilter==='telecom_in')  return tx.cat==='telecom'&&tx.type==='in';
+      if (tx.cat!==subFilter) return false;
+    }
+    if (q) {
+      const haystack=(tx.title+tx.subtitle+tx.dateStr).toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+  allTxFiltered=filtered;
+  renderTxList(filtered);
+}
+
+// ─── PEOPLE ──────────────────────────────────────────────────────────────────
+function renderPeopleList(arr) {
+  const el=$('ppl-list');
+  if (!arr.length) { el.innerHTML=`<div class="text-center py-12 panel rounded-3xl"><i class="fa-solid fa-address-book text-4xl text-gray-700 mb-3 block"></i><p class="text-gray-500 text-sm">لا توجد جهات اتصال</p></div>`; return; }
+  el.innerHTML = arr.map((p,i)=>{
+    const net=p.totalIn-p.totalOut, pos=net>=0;
+    const delay=Math.min(i*18,400);
+    return `<div onclick="openPerson('${p.phone}')" class="panel rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition anim-up" style="animation-delay:${delay}ms">
+      <div class="w-11 h-11 rounded-full glass flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-user text-sm"></i></div>
+      <div class="flex-1 min-w-0">
+        <div class="font-bold text-[13px] text-white truncate">${p.name}</div>
+        <div class="text-[10px] font-mono text-gray-500 mt-0.5 tracking-wider">${p.phone}</div>
+      </div>
+      <div class="text-right shrink-0">
+        <div class="text-[9px] text-gray-600 font-bold mb-0.5">الصافي</div>
+        <div class="font-mono font-bold text-[13px] ${pos?'text-emerald-400':'text-white'}" dir="ltr">${pos?'+':''}${fmt(net)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterPeople() {
+  const q=$('ppl-search').value.toLowerCase();
+  renderPeopleList(peopleArr.filter(p=>p.name.toLowerCase().includes(q)||p.phone.includes(q)));
+}
+
+function openPerson(phone) {
+  const p=D.people[phone]; if(!p) return;
+  $('m-name').textContent=p.name;
+  $('m-phone').textContent=p.phone;
+  const net=p.totalIn-p.totalOut, pos=net>=0;
+  $('m-net').textContent=(pos?'+':'')+fmt(net);
+  $('m-net').style.color=pos?'#34d399':'#fff';
+  $('m-bar').style.background=pos?'#10b981':'var(--red)';
+  $('m-label').textContent=pos?'المتبقي لك':'المتبقي عليك';
+  $('m-totIn').textContent=fmt(p.totalIn);
+  $('m-totOut').textContent=fmt(p.totalOut);
+
+  const sorted=[...p.txns].sort((a,b)=>b.dateObj-a.dateObj);
+  $('m-txlist').innerHTML=sorted.map(tx=>{
+    const isIn=tx.type==='in';
+    return `<div class="flex items-center gap-3 p-3 rounded-xl" style="background:#0d0d0d;border:1px solid var(--border)">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style="background:${isIn?'rgba(16,185,129,.1)':'rgba(255,255,255,.06)'}">
+        <i class="fa-solid ${isIn?'fa-arrow-down':'fa-arrow-up'} text-[10px]" style="color:${isIn?'#34d399':'#fff'}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[12px] font-bold text-white truncate">${tx.desc}</div>
+        <div class="text-[10px] font-mono text-gray-500 mt-0.5">${fmtDate(tx.dateStr)}</div>
+      </div>
+      <div class="font-mono font-bold text-[13px] shrink-0 ${isIn?'text-emerald-400':'text-white'}" dir="ltr">${isIn?'+':'-'}${fmt(tx.amount)}</div>
+    </div>`;
+  }).join('');
+
+  const modal=$('pModal');
+  modal.classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>modal.classList.add('open'));
+}
+
+function closeModal() {
+  const modal=$('pModal');
+  modal.classList.remove('open');
+  setTimeout(()=>{ modal.classList.add('hidden'); document.body.style.overflow=''; },450);
+}
+
+// ─── TAB NAV ─────────────────────────────────────────────────────────────────
+function goTab(tab) {
+  ['home','transactions','people','analytics'].forEach(t=>{
+    $(`v-${t}`).classList.toggle('hidden', t!==tab);
+    $(`nb-${t}`).classList.toggle('active', t===tab);
+  });
+  const view=$(`v-${tab}`);
+  view.classList.remove('anim-fade');
+  void view.offsetWidth;
+  view.classList.add('anim-fade');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (tab==='transactions') { applyFilters(); }
+}
+</script>
 </body>
 </html>
